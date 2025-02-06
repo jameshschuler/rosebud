@@ -9,9 +9,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   ActionIcon,
   Avatar,
-  Badge,
   Box,
+  Button,
   Container,
+  Divider,
   Flex,
   Modal,
   Skeleton,
@@ -53,13 +54,18 @@ async function saveCheckIn(userId: string, date: Date | null) {
 }
 
 export function AppBar() {
+  const { user } = useAuth()
+
+  const initials = (user?.user_metadata?.full_name ?? '')
+    .split(' ')
+    .map((n: string[]) => n[0])
+    .join('')
+
   return (
     <Flex justify="space-between" align="center">
       <Title>Swol</Title>
       <Box>
-        <Avatar color="cyan" radius="xl">
-          MK
-        </Avatar>
+        <Avatar radius="xl">{initials}</Avatar>
       </Box>
     </Flex>
   )
@@ -75,6 +81,14 @@ export function ListSkeleton({ count = 5 }: { count?: number }) {
   )
 }
 
+export function NoData() {
+  return (
+    <Box>
+      <Title>No check-ins found</Title>
+    </Box>
+  )
+}
+
 function App() {
   const { auth, signIn, signOut, user } = useAuth()
 
@@ -83,12 +97,43 @@ function App() {
   const { data, error, isLoading, refetch } = useGetCheckIns(user?.id)
 
   const checkIns = useMemo(() => {
-    // Set<'year', Map<'month', { id, checkInDate }>>
-    return 'hello'
-  }, [])
+    const checkIns = new Map<
+      string,
+      Map<string, { id: number; checkInDate: string }[]>
+    >()
+
+    if (!data) {
+      return checkIns
+    }
+
+    data.forEach((d) => {
+      const date = dayjs(d.checkin_date)
+      const year = date.format('YYYY')
+      const month = date.format('MMMM')
+
+      if (!checkIns.has(year)) {
+        checkIns.set(year, new Map())
+      }
+
+      const yearMap = checkIns.get(year)
+      const monthCheckIns = yearMap?.get(month)
+      if (!monthCheckIns) {
+        yearMap?.set(month, [
+          { id: d.id, checkInDate: dayjs(d.checkin_date).format('MM-DD-YYYY') },
+        ])
+      } else {
+        monthCheckIns.push({
+          id: d.id,
+          checkInDate: dayjs(d.checkin_date).format('MM-DD-YYYY'),
+        })
+      }
+    })
+
+    return checkIns
+  }, [data])
 
   if (!auth || !user) {
-    // TODO:
+    // TODO: improve design
     return (
       <Flex justify="center" align="center" style={{ height: '100vh' }}>
         <button onClick={signIn}>Sign In</button>
@@ -101,41 +146,61 @@ function App() {
       <Box p="xl">
         <AppBar />
         <Container size="lg" py="xl">
-          <Flex justify="space-between" align="center">
+          <Flex justify="space-between" align="center" mt="xl">
             <Title>Check Ins</Title>
-            <Flex gap={8}>
-              <ActionIcon
-                variant="transparent"
-                aria-label="Delete Check In"
-                color="pink"
-              >
-                <FontAwesomeIcon icon={faTrashCan} size="xl" />
-              </ActionIcon>
-              <ActionIcon
-                variant="transparent"
-                aria-label="Add Check In"
+            <Flex gap={8} align="center">
+              {false && (
+                <ActionIcon
+                  variant="transparent"
+                  aria-label="Delete Check In"
+                  color="pink"
+                >
+                  <FontAwesomeIcon icon={faTrashCan} size="xl" />
+                </ActionIcon>
+              )}
+              <Button
+                leftSection={<FontAwesomeIcon icon={faPlus} size="xl" />}
+                variant="filled"
                 color="green"
-                onClick={open}
               >
-                <FontAwesomeIcon icon={faPlus} size="xl" />
-              </ActionIcon>
+                Add Check In
+              </Button>
             </Flex>
           </Flex>
-          <Box py="lg">
+          <Box py="xl">
             {isLoading && <ListSkeleton />}
             {error && <div>Error: {error.message}</div>}
             {!error && !isLoading && data && (
-              <Flex direction="column" gap={8}>
-                {data.map((d) => (
-                  <Badge
-                    key={d.id}
-                    variant="outline"
-                    color="blue"
-                    size="xl"
-                    radius="md"
-                  >
-                    {dayjs(d.checkin_date).format('MM-DD-YYYY')}
-                  </Badge>
+              <Flex direction="column">
+                {checkIns.size === 0 && <NoData />}
+
+                {[...checkIns].map(([year, months]) => (
+                  <Box key={year}>
+                    <Title order={2}>{year}</Title>
+                    <Flex direction="column" mt="lg" gap={32}>
+                      {[...months].map(([month, data]) => (
+                        <Box key={month}>
+                          <Title size="md" order={3}>
+                            {month}
+                          </Title>
+                          <Flex gap={16} wrap="wrap" mt="md">
+                            {data.map((d) => (
+                              <Button
+                                w={140}
+                                key={d.id}
+                                variant="outline"
+                                color="black"
+                                radius="md"
+                              >
+                                {dayjs(d.checkInDate).format('MMMM DD')}
+                              </Button>
+                            ))}
+                          </Flex>
+                        </Box>
+                      ))}
+                    </Flex>
+                    <Divider my="xl" />
+                  </Box>
                 ))}
               </Flex>
             )}
