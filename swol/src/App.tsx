@@ -1,7 +1,3 @@
-import '@mantine/core/styles.css'
-import '@mantine/dates/styles.css'
-import { useAuth } from './AuthProvider'
-
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,12 +14,17 @@ import {
   Skeleton,
   Title,
 } from '@mantine/core'
+import '@mantine/core/styles.css'
 import { DateInput } from '@mantine/dates'
+import '@mantine/dates/styles.css'
 import { useForm } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { useMemo } from 'react'
+import { useAuth } from './AuthProvider'
+import { NoData } from './components/NoData'
+import { useAddCheckIn } from './hooks/useAddCheckIn'
 import { useGetCheckIns } from './hooks/useGetCheckIns'
 
 dayjs.extend(utc)
@@ -58,20 +59,14 @@ export function ListSkeleton({ count = 5 }: { count?: number }) {
   )
 }
 
-export function NoData() {
-  return (
-    <Box>
-      <Title>No check-ins found</Title>
-    </Box>
-  )
-}
-
 function App() {
   const { auth, signIn, user } = useAuth()
 
   const [opened, { open, close }] = useDisclosure(false)
 
-  const { data, error, isLoading } = useGetCheckIns(user?.id)
+  const { data, error, isLoading: loadingCheckIns } = useGetCheckIns(user?.id)
+
+  const { mutateAsync: addCheckIn, isLoading: isUpdating } = useAddCheckIn()
 
   // TODO: move to hook (useTransformCheckIns)
   const checkIns = useMemo(() => {
@@ -113,7 +108,7 @@ function App() {
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
-      date: dayjs().toDate(),
+      date: dayjs(),
     },
 
     validate: {
@@ -122,13 +117,15 @@ function App() {
   })
 
   if (!auth || !user) {
-    // TODO: improve design
+    // TODO: improve design, should still show app bar
     return (
       <Flex justify="center" align="center" style={{ height: '100vh' }}>
-        <button onClick={signIn}>Sign In</button>
+        <Button onClick={signIn}>Sign In</Button>
       </Flex>
     )
   }
+
+  const hasCheckIns = checkIns.size !== 0
 
   return (
     <>
@@ -136,7 +133,7 @@ function App() {
         <AppBar />
         <Container size="lg" py="xl">
           <Flex justify="space-between" align="center" mt="xl">
-            <Title>Check Ins</Title>
+            <Title>Your Check Ins</Title>
             <Flex gap={8} align="center">
               {false && (
                 <ActionIcon
@@ -147,22 +144,24 @@ function App() {
                   <FontAwesomeIcon icon={faTrashCan} size="xl" />
                 </ActionIcon>
               )}
-              <Button
-                leftSection={<FontAwesomeIcon icon={faPlus} size="xl" />}
-                variant="filled"
-                color="green"
-                onClick={open}
-              >
-                New Check In
-              </Button>
+              {hasCheckIns && (
+                <Button
+                  leftSection={<FontAwesomeIcon icon={faPlus} size="xl" />}
+                  variant="filled"
+                  color="yellow"
+                  onClick={open}
+                >
+                  New Check In
+                </Button>
+              )}
             </Flex>
           </Flex>
           <Box py="xl">
-            {isLoading && <ListSkeleton />}
+            {loadingCheckIns && <ListSkeleton />}
             {error && <div>Error: {error.message}</div>}
-            {!error && !isLoading && data && (
+            {!error && !loadingCheckIns && data && (
               <Flex direction="column">
-                {checkIns.size === 0 && <NoData />}
+                {!hasCheckIns && <NoData onAction={open} />}
 
                 {[...checkIns].map(([year, months]) => (
                   <Box key={year}>
@@ -205,7 +204,11 @@ function App() {
             <Modal.CloseButton />
           </Modal.Header>
           <Modal.Body p={24}>
-            <form onSubmit={form.onSubmit((values) => console.log(values))}>
+            <form
+              onSubmit={form.onSubmit((values) => {
+                console.log(values)
+              })}
+            >
               <DateInput
                 withAsterisk
                 label="Date"
@@ -218,7 +221,7 @@ function App() {
                 <Button variant="default" color="gray" onClick={close}>
                   Cancel
                 </Button>
-                <Button type="submit" color="green">
+                <Button type="submit" color="yellow">
                   Add
                 </Button>
               </Group>
