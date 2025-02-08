@@ -1,7 +1,6 @@
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
 import { useAuth } from './AuthProvider'
-import { supabase } from './lib'
 
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -14,10 +13,13 @@ import {
   Container,
   Divider,
   Flex,
+  Group,
   Modal,
   Skeleton,
   Title,
 } from '@mantine/core'
+import { DateInput } from '@mantine/dates'
+import { useForm } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -26,33 +28,6 @@ import { useGetCheckIns } from './hooks/useGetCheckIns'
 
 dayjs.extend(utc)
 
-interface CheckIn {
-  id: number
-  checkin_date: string
-}
-
-// TODO: setup eslint
-// TODO: setup prettier
-
-// TODO: move to hook and useMutation
-async function saveCheckIn(userId: string, date: Date | null) {
-  if (!date) {
-    return
-  }
-
-  const { data, error } = await supabase.from('gym_checkin').insert({
-    user_id: userId,
-    checkin_date: dayjs(date).utc().format(),
-  })
-
-  if (error) {
-    console.error('Error saving check-in:', error.message)
-    return
-  }
-
-  console.log('Check-in saved:', data)
-}
-
 export function AppBar() {
   const { user } = useAuth()
 
@@ -60,6 +35,8 @@ export function AppBar() {
     .split(' ')
     .map((n: string[]) => n[0])
     .join('')
+
+  // TODO: add sign out button
 
   return (
     <Flex justify="space-between" align="center">
@@ -90,12 +67,13 @@ export function NoData() {
 }
 
 function App() {
-  const { auth, signIn, signOut, user } = useAuth()
+  const { auth, signIn, user } = useAuth()
 
   const [opened, { open, close }] = useDisclosure(false)
 
-  const { data, error, isLoading, refetch } = useGetCheckIns(user?.id)
+  const { data, error, isLoading } = useGetCheckIns(user?.id)
 
+  // TODO: move to hook (useTransformCheckIns)
   const checkIns = useMemo(() => {
     const checkIns = new Map<
       string,
@@ -132,6 +110,17 @@ function App() {
     return checkIns
   }, [data])
 
+  const form = useForm({
+    mode: 'uncontrolled',
+    initialValues: {
+      date: dayjs().toDate(),
+    },
+
+    validate: {
+      date: (value) => (value !== null ? null : 'Invalid date'),
+    },
+  })
+
   if (!auth || !user) {
     // TODO: improve design
     return (
@@ -162,8 +151,9 @@ function App() {
                 leftSection={<FontAwesomeIcon icon={faPlus} size="xl" />}
                 variant="filled"
                 color="green"
+                onClick={open}
               >
-                Add Check In
+                New Check In
               </Button>
             </Flex>
           </Flex>
@@ -211,10 +201,29 @@ function App() {
         <Modal.Overlay />
         <Modal.Content>
           <Modal.Header>
-            <Modal.Title>Add Check In</Modal.Title>
+            <Modal.Title>New Check In</Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>
-          <Modal.Body>Modal content</Modal.Body>
+          <Modal.Body p={24}>
+            <form onSubmit={form.onSubmit((values) => console.log(values))}>
+              <DateInput
+                withAsterisk
+                label="Date"
+                placeholder="Check In Date"
+                key={form.key('date')}
+                {...form.getInputProps('date')}
+              />
+
+              <Group justify="flex-end" mt="md">
+                <Button variant="default" color="gray" onClick={close}>
+                  Cancel
+                </Button>
+                <Button type="submit" color="green">
+                  Add
+                </Button>
+              </Group>
+            </form>
+          </Modal.Body>
         </Modal.Content>
       </Modal.Root>
     </>
