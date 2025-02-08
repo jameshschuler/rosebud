@@ -20,6 +20,7 @@
     "@mantine/dates": "^7.15.3",
     "@mantine/form": "^7.16.2",
     "@mantine/hooks": "^7.15.3",
+    "@mantine/notifications": "^7.16.3",
     "@supabase/supabase-js": "^2.47.12",
     "@tanstack/react-query": "^5.64.2",
     "dayjs": "^1.11.13",

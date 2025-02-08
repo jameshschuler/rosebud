@@ -1,9 +1,8 @@
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   ActionIcon,
-  Avatar,
   Box,
   Button,
   Container,
@@ -11,7 +10,6 @@ import {
   Flex,
   Group,
   Modal,
-  Skeleton,
   Title,
 } from '@mantine/core'
 import '@mantine/core/styles.css'
@@ -19,45 +17,19 @@ import { DateInput } from '@mantine/dates'
 import '@mantine/dates/styles.css'
 import { useForm } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
+import { notifications } from '@mantine/notifications'
+import '@mantine/notifications/styles.css'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { useMemo } from 'react'
 import { useAuth } from './AuthProvider'
+import { AppBar } from './components/AppBar'
+import { ListSkeleton } from './components/ListSkeleton'
 import { NoData } from './components/NoData'
 import { useAddCheckIn } from './hooks/useAddCheckIn'
 import { useGetCheckIns } from './hooks/useGetCheckIns'
 
 dayjs.extend(utc)
-
-export function AppBar() {
-  const { user } = useAuth()
-
-  const initials = (user?.user_metadata?.full_name ?? '')
-    .split(' ')
-    .map((n: string[]) => n[0])
-    .join('')
-
-  // TODO: add sign out button
-
-  return (
-    <Flex justify="space-between" align="center">
-      <Title>Swol</Title>
-      <Box>
-        <Avatar radius="xl">{initials}</Avatar>
-      </Box>
-    </Flex>
-  )
-}
-
-export function ListSkeleton({ count = 5 }: { count?: number }) {
-  return (
-    <Flex direction="column" gap={8}>
-      {[...Array(count)].map((_, i) => (
-        <Skeleton key={i} height={50} radius="lg" />
-      ))}
-    </Flex>
-  )
-}
 
 function App() {
   const { auth, signIn, user } = useAuth()
@@ -66,7 +38,7 @@ function App() {
 
   const { data, error, isLoading: loadingCheckIns } = useGetCheckIns(user?.id)
 
-  const { mutateAsync: addCheckIn, isLoading: isUpdating } = useAddCheckIn()
+  const { mutateAsync: addCheckIn, isPending } = useAddCheckIn()
 
   // TODO: move to hook (useTransformCheckIns)
   const checkIns = useMemo(() => {
@@ -108,11 +80,11 @@ function App() {
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
-      date: dayjs(),
+      date: dayjs().toDate(),
     },
 
     validate: {
-      date: (value) => (value !== null ? null : 'Invalid date'),
+      date: (value) => (!value ? 'Date is required' : null),
     },
   })
 
@@ -120,7 +92,7 @@ function App() {
     // TODO: improve design, should still show app bar
     return (
       <Flex justify="center" align="center" style={{ height: '100vh' }}>
-        <Button onClick={signIn}>Sign In</Button>
+        <Button onClick={signIn}>Sign in</Button>
       </Flex>
     )
   }
@@ -175,6 +147,9 @@ function App() {
                           <Flex gap={16} wrap="wrap" mt="md">
                             {data.map((d) => (
                               <Button
+                                style={{
+                                  boxShadow: '4px 4px 0px black',
+                                }}
                                 w={140}
                                 key={d.id}
                                 variant="outline"
@@ -205,8 +180,28 @@ function App() {
           </Modal.Header>
           <Modal.Body p={24}>
             <form
-              onSubmit={form.onSubmit((values) => {
-                console.log(values)
+              onSubmit={form.onSubmit(async (values) => {
+                try {
+                  await addCheckIn({
+                    userId: user.id,
+                    date: values.date,
+                  })
+
+                  notifications.show({
+                    title: 'Success!',
+                    message: 'Added check in successfully.',
+                    color: 'green',
+                    icon: <FontAwesomeIcon icon={faCheck} />,
+                    withBorder: true,
+                    autoClose: 2000,
+                    radius: 'md',
+                  })
+
+                  close()
+                } catch (error) {
+                  console.error(error)
+                  // TODO: add toast
+                }
               })}
             >
               <DateInput
@@ -221,7 +216,12 @@ function App() {
                 <Button variant="default" color="gray" onClick={close}>
                   Cancel
                 </Button>
-                <Button type="submit" color="yellow">
+                <Button
+                  type="submit"
+                  color="yellow"
+                  disabled={isPending}
+                  loading={isPending}
+                >
                   Add
                 </Button>
               </Group>

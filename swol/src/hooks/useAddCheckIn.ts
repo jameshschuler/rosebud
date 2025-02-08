@@ -1,8 +1,23 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { PostgrestSingleResponse } from '@supabase/supabase-js'
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { supabase } from '../lib'
 
-async function addCheckIn(date: string, userId: string) {
+export interface AddCheckInRequest {
+  date: Date
+  userId: string
+}
+
+async function addCheckIn({
+  date,
+  userId,
+}: AddCheckInRequest): Promise<
+  PostgrestSingleResponse<{ id: number; checkin_date: string }>
+> {
   return supabase
     .from('gym_checkin')
     .insert({
@@ -10,17 +25,23 @@ async function addCheckIn(date: string, userId: string) {
       checkin_date: dayjs(date).utc().format(),
     })
     .throwOnError()
-    .select<string, { id: number; checkin_date: string }>('*')
+    .select('*')
     .throwOnError()
     .single()
 }
 
-export function useAddCheckIn() {
+export function useAddCheckIn(): UseMutationResult<
+  PostgrestSingleResponse<{
+    id: number
+    checkin_date: string
+  }>,
+  Error,
+  AddCheckInRequest
+> {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ date, userId }: { date: string; userId: string }) =>
-      addCheckIn(date, userId),
+    mutationFn: (request: AddCheckInRequest) => addCheckIn(request),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['checkIns'],
