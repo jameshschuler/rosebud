@@ -2,7 +2,6 @@ import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { faCheck, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  ActionIcon,
   Box,
   Button,
   Container,
@@ -21,13 +20,14 @@ import { notifications } from '@mantine/notifications'
 import '@mantine/notifications/styles.css'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { useMemo } from 'react'
+import { useState } from 'react'
 import { useAuth } from './AuthProvider'
 import { AppBar } from './components/AppBar'
 import { ListSkeleton } from './components/ListSkeleton'
 import { NoData } from './components/NoData'
 import { useAddCheckIn } from './hooks/useAddCheckIn'
 import { useGetCheckIns } from './hooks/useGetCheckIns'
+import { useTransformCheckIns } from './hooks/useTransformCheckIns'
 
 dayjs.extend(utc)
 
@@ -40,42 +40,9 @@ function App() {
 
   const { mutateAsync: addCheckIn, isPending } = useAddCheckIn()
 
-  // TODO: move to hook (useTransformCheckIns)
-  const checkIns = useMemo(() => {
-    const checkIns = new Map<
-      string,
-      Map<string, { id: number; checkInDate: string }[]>
-    >()
+  const { checkIns, hasCheckIns } = useTransformCheckIns(data)
 
-    if (!data) {
-      return checkIns
-    }
-
-    data.forEach((d) => {
-      const date = dayjs(d.checkin_date)
-      const year = date.format('YYYY')
-      const month = date.format('MMMM')
-
-      if (!checkIns.has(year)) {
-        checkIns.set(year, new Map())
-      }
-
-      const yearMap = checkIns.get(year)
-      const monthCheckIns = yearMap?.get(month)
-      if (!monthCheckIns) {
-        yearMap?.set(month, [
-          { id: d.id, checkInDate: dayjs(d.checkin_date).format('MM-DD-YYYY') },
-        ])
-      } else {
-        monthCheckIns.push({
-          id: d.id,
-          checkInDate: dayjs(d.checkin_date).format('MM-DD-YYYY'),
-        })
-      }
-    })
-
-    return checkIns
-  }, [data])
+  const [selectedCheckIn, setSelectedCheckIn] = useState<number>()
 
   const form = useForm({
     mode: 'uncontrolled',
@@ -97,24 +64,24 @@ function App() {
     )
   }
 
-  const hasCheckIns = checkIns.size !== 0
-
   return (
     <>
       <Box p="xl">
         <AppBar />
         <Container size="lg" py="xl">
+          {/* TODO: PageHeader */}
           <Flex justify="space-between" align="center" mt="xl">
             <Title>Your Check Ins</Title>
             <Flex gap={8} align="center">
-              {false && (
-                <ActionIcon
-                  variant="transparent"
-                  aria-label="Delete Check In"
+              {selectedCheckIn && (
+                <Button
+                  leftSection={<FontAwesomeIcon icon={faTrashCan} size="xl" />}
+                  variant="filled"
                   color="pink"
+                  onClick={open}
                 >
-                  <FontAwesomeIcon icon={faTrashCan} size="xl" />
-                </ActionIcon>
+                  Remove Check In
+                </Button>
               )}
               {hasCheckIns && (
                 <Button
@@ -129,6 +96,7 @@ function App() {
             </Flex>
           </Flex>
           <Box py="xl">
+            {/* TODO: CheckInsList? */}
             {loadingCheckIns && <ListSkeleton />}
             {error && <div>Error: {error.message}</div>}
             {!error && !loadingCheckIns && data && (
@@ -148,7 +116,14 @@ function App() {
                             {data.map((d) => (
                               <Button
                                 style={{
-                                  boxShadow: '4px 4px 0px black',
+                                  boxShadow: `4px 4px 0px ${selectedCheckIn === d.id ? 'var(--mantine-color-yellow-6)' : 'black'}`,
+                                }}
+                                onClick={() => {
+                                  if (selectedCheckIn === d.id) {
+                                    setSelectedCheckIn(undefined)
+                                  } else {
+                                    setSelectedCheckIn(d.id)
+                                  }
                                 }}
                                 w={140}
                                 key={d.id}
