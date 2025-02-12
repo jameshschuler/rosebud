@@ -1,3 +1,28 @@
+# Features
+
+## Check Ins
+
+- Remove check in
+- Toggle check in display
+- Show check ins in calendar
+
+## PR Log
+
+- Exercise list
+- Add PR
+- Edit PR
+- Delete PR
+- Search PRs?
+
+## Workout Timer
+
+## Misc
+
+- Deploy to render
+- PWA Support
+- Mobile design / usability
+- Tests
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

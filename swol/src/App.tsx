@@ -25,8 +25,10 @@ import { useAuth } from './AuthProvider'
 import { AppBar } from './components/AppBar'
 import { ListSkeleton } from './components/ListSkeleton'
 import { NoData } from './components/NoData'
+import { RemoveCheckInModal } from './components/RemoveCheckInModal'
 import { useAddCheckIn } from './hooks/useAddCheckIn'
 import { useGetCheckIns } from './hooks/useGetCheckIns'
+import { useModal } from './hooks/useModal'
 import { useTransformCheckIns } from './hooks/useTransformCheckIns'
 
 dayjs.extend(utc)
@@ -35,6 +37,7 @@ function App() {
   const { auth, signIn, user } = useAuth()
 
   const [opened, { open, close }] = useDisclosure(false)
+  const removeModal = useModal(false)
 
   const { data, error, isLoading: loadingCheckIns } = useGetCheckIns(user?.id)
 
@@ -77,8 +80,8 @@ function App() {
                 <Button
                   leftSection={<FontAwesomeIcon icon={faTrashCan} size="xl" />}
                   variant="filled"
-                  color="pink"
-                  onClick={open}
+                  color="red"
+                  onClick={removeModal.open}
                 >
                   Remove Check In
                 </Button>
@@ -204,6 +207,10 @@ function App() {
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>
+      <RemoveCheckInModal
+        opened={removeModal.opened}
+        close={removeModal.close}
+      />
     </>
   )
 }
