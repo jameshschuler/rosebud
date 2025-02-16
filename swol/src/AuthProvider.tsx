@@ -1,15 +1,7 @@
 import { User } from '@supabase/supabase-js'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { AuthContext } from './AuthContext'
 import { supabase } from './lib'
-
-const AuthContext = createContext({
-  auth: false,
-  user: null as User | null,
-  signIn: () => {},
-  signOut: () => {},
-})
-
-export const useAuth = () => useContext(AuthContext)
 
 async function signIn() {
   await supabase.auth.signInWithOAuth({ provider: 'github' })

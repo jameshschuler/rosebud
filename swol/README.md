@@ -2,9 +2,12 @@
 
 ## Check Ins
 
-- Remove check in
 - Toggle check in display
 - Show check ins in calendar
+
+## Settings
+
+- Toggle check in display(MMMM DD YYYY, MMMM DD, DD, etc.)
 
 ## PR Log
 
@@ -14,7 +17,17 @@
 - Delete PR
 - Search PRs?
 
+## Achievements
+
+- TODO
+
+## Goal Tracker
+
+- TODO
+
 ## Workout Timer
+
+- TODO
 
 ## Misc
 
@@ -22,6 +35,11 @@
 - PWA Support
 - Mobile design / usability
 - Tests
+
+## Profile Setup
+
+- Set check ins per week goal
+- Each week this is completed counts towards some achievement
 
 # React + TypeScript + Vite
 

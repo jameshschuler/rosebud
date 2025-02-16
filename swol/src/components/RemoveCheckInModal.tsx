@@ -1,46 +1,41 @@
 import { Button, Group, Modal, Text } from '@mantine/core'
+import { useAuth } from '../hooks'
+import { useNotifications } from '../hooks/useNotifications'
+import { useRemoveCheckIn } from '../hooks/useRemoveCheckIn'
 
 interface RemoveCheckInModalProps {
+  selectedCheckIn?: number
   opened: boolean
   close: () => void
 }
 
-export function RemoveCheckInModal({ opened, close }: RemoveCheckInModalProps) {
+export function RemoveCheckInModal({
+  selectedCheckIn,
+  opened,
+  close,
+}: RemoveCheckInModalProps) {
+  const { user } = useAuth()
+  const { error, success } = useNotifications()
+
+  const { mutateAsync: removeCheckIn, isPending } = useRemoveCheckIn()
+
   return (
     <Modal.Root opened={opened} onClose={close} size="lg">
       <Modal.Overlay />
       <Modal.Content>
         <Modal.Header>
-          <Modal.Title>Remove Check In</Modal.Title>
+          <Modal.Title>
+            <Text size="xl" fw={600}>
+              Remove Check In
+            </Text>
+          </Modal.Title>
           <Modal.CloseButton />
         </Modal.Header>
         <Modal.Body p={24}>
-          {/* <form
-              onSubmit={form.onSubmit(async (values) => {
-                try {
-                //   await addCheckIn({
-                //     userId: user.id,
-                //     date: values.date,
-                //   })
-
-                  notifications.show({
-                    title: 'Success!',
-                    message: 'Added check in successfully.',
-                    color: 'green',
-                    icon: <FontAwesomeIcon icon={faCheck} />,
-                    withBorder: true,
-                    autoClose: 2000,
-                    radius: 'md',
-                  })
-
-                  close()
-                } catch (error) {
-                  console.error(error)
-                  // TODO: add toast
-                }
-              })}
-            > */}
-          <Text size="md">Are you sure?</Text>
+          <Text size="md" fw={500}>
+            Are you sure you want to remove this check in? This action cannot be
+            undone.
+          </Text>
 
           <Group justify="flex-end" mt="md">
             <Button variant="default" color="gray" onClick={close}>
@@ -49,10 +44,33 @@ export function RemoveCheckInModal({ opened, close }: RemoveCheckInModalProps) {
             <Button
               type="button"
               color="red"
-              //   disabled={isPending}
-              //   loading={isPending}
+              disabled={isPending}
+              loading={isPending}
+              onClick={async () => {
+                try {
+                  if (!selectedCheckIn || !user) {
+                    return
+                  }
+
+                  await removeCheckIn({
+                    userId: user?.id,
+                    checkInId: selectedCheckIn,
+                  })
+
+                  success({
+                    message: 'Removed check in successfully.',
+                  })
+
+                  close()
+                } catch {
+                  error({
+                    message:
+                      'Unable to remove check in. Please try again in a moment.',
+                  })
+                }
+              }}
             >
-              Remove
+              Yes, remove it
             </Button>
           </Group>
         </Modal.Body>

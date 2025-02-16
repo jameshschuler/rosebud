@@ -4,8 +4,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Avatar, Box, Button, Flex, Image, Menu, Title } from '@mantine/core'
-import { useAuth } from '../AuthProvider'
 import swol from '../assets/SWOLa192.png'
+import { useAuth } from '../hooks'
 
 export function AppBar() {
   const { user, signOut } = useAuth()

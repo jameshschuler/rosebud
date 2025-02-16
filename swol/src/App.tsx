@@ -1,62 +1,38 @@
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
-import { faCheck, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Flex,
-  Group,
-  Modal,
-  Title,
-} from '@mantine/core'
+import { Box, Button, Container, Divider, Flex, Title } from '@mantine/core'
 import '@mantine/core/styles.css'
-import { DateInput } from '@mantine/dates'
 import '@mantine/dates/styles.css'
-import { useForm } from '@mantine/form'
-import { useDisclosure } from '@mantine/hooks'
-import { notifications } from '@mantine/notifications'
 import '@mantine/notifications/styles.css'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { useState } from 'react'
-import { useAuth } from './AuthProvider'
+import { AddCheckInModal } from './components/AddCheckInModal'
 import { AppBar } from './components/AppBar'
 import { ListSkeleton } from './components/ListSkeleton'
 import { NoData } from './components/NoData'
 import { RemoveCheckInModal } from './components/RemoveCheckInModal'
-import { useAddCheckIn } from './hooks/useAddCheckIn'
-import { useGetCheckIns } from './hooks/useGetCheckIns'
-import { useModal } from './hooks/useModal'
-import { useTransformCheckIns } from './hooks/useTransformCheckIns'
+import {
+  useAuth,
+  useGetCheckIns,
+  useModal,
+  useTransformCheckIns,
+} from './hooks'
 
 dayjs.extend(utc)
 
 function App() {
   const { auth, signIn, user } = useAuth()
 
-  const [opened, { open, close }] = useDisclosure(false)
+  const addModal = useModal(false)
   const removeModal = useModal(false)
 
   const { data, error, isLoading: loadingCheckIns } = useGetCheckIns(user?.id)
 
-  const { mutateAsync: addCheckIn, isPending } = useAddCheckIn()
-
   const { checkIns, hasCheckIns } = useTransformCheckIns(data)
 
   const [selectedCheckIn, setSelectedCheckIn] = useState<number>()
-
-  const form = useForm({
-    mode: 'uncontrolled',
-    initialValues: {
-      date: dayjs().toDate(),
-    },
-
-    validate: {
-      date: (value) => (!value ? 'Date is required' : null),
-    },
-  })
 
   if (!auth || !user) {
     // TODO: improve design, should still show app bar
@@ -91,7 +67,7 @@ function App() {
                   leftSection={<FontAwesomeIcon icon={faPlus} size="xl" />}
                   variant="filled"
                   color="yellow"
-                  onClick={open}
+                  onClick={addModal.open}
                 >
                   New Check In
                 </Button>
@@ -149,67 +125,15 @@ function App() {
           </Box>
         </Container>
       </Box>
-      <Modal.Root opened={opened} onClose={close} size="lg">
-        <Modal.Overlay />
-        <Modal.Content>
-          <Modal.Header>
-            <Modal.Title>New Check In</Modal.Title>
-            <Modal.CloseButton />
-          </Modal.Header>
-          <Modal.Body p={24}>
-            <form
-              onSubmit={form.onSubmit(async (values) => {
-                try {
-                  await addCheckIn({
-                    userId: user.id,
-                    date: values.date,
-                  })
-
-                  notifications.show({
-                    title: 'Success!',
-                    message: 'Added check in successfully.',
-                    color: 'green',
-                    icon: <FontAwesomeIcon icon={faCheck} />,
-                    withBorder: true,
-                    autoClose: 2000,
-                    radius: 'md',
-                  })
-
-                  close()
-                } catch (error) {
-                  console.error(error)
-                  // TODO: add toast
-                }
-              })}
-            >
-              <DateInput
-                withAsterisk
-                label="Date"
-                placeholder="Check In Date"
-                key={form.key('date')}
-                {...form.getInputProps('date')}
-              />
-
-              <Group justify="flex-end" mt="md">
-                <Button variant="default" color="gray" onClick={close}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  color="yellow"
-                  disabled={isPending}
-                  loading={isPending}
-                >
-                  Add
-                </Button>
-              </Group>
-            </form>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal.Root>
+      <AddCheckInModal opened={addModal.opened} close={addModal.close} />
       <RemoveCheckInModal
+        selectedCheckIn={selectedCheckIn}
         opened={removeModal.opened}
-        close={removeModal.close}
+        close={() => {
+          setSelectedCheckIn(undefined)
+
+          removeModal.close()
+        }}
       />
     </>
   )
