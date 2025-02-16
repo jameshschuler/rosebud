@@ -35,11 +35,22 @@
 - PWA Support
 - Mobile design / usability
 - Tests
+- landing page / login design
+- font
+- implement circle cursor (should be a setting)
 
-## Profile Setup
+## Profile Setup / Onboarding
 
 - Set check ins per week goal
 - Each week this is completed counts towards some achievement
+
+# Devlog
+
+### 02/16/25
+
+- [ ] Deploy to render
+- [ ] Clean up anon design (landing page / login design)
+- [x] Pick a font
 
 # React + TypeScript + Vite
 
