@@ -1,5 +1,5 @@
 import { User } from '@supabase/supabase-js'
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
 import { supabase } from './lib'
 
@@ -11,7 +11,7 @@ async function signOut() {
   await supabase.auth.signOut()
 }
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [auth, setAuth] = useState(false)
   const [loading, setLoading] = useState<boolean | null>(null)

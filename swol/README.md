@@ -36,8 +36,11 @@
 - Mobile design / usability
 - Tests
 - landing page / login design
-- font
 - implement circle cursor (should be a setting)
+- non white background color
+- Add orm tool
+- Add barbell load calculator
+- Goal Tracker
 
 ## Profile Setup / Onboarding
 
