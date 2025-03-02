@@ -54,9 +54,9 @@
 - [x] Deploy to render
 - [x] Pick a font
 
-### 02/17/25
+### 03/1/25
 
-- [ ] Clean up anon design (landing page / login design)
+- [x] Clean up anon design (landing page / login design)
 
 # React + TypeScript + Vite
 

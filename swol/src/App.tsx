@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { AddCheckInModal } from './components/AddCheckInModal'
 import { AppBar } from './components/AppBar'
 import { ListSkeleton } from './components/ListSkeleton'
+import { Login } from './components/Login'
 import { NoData } from './components/NoData'
 import { RemoveCheckInModal } from './components/RemoveCheckInModal'
 import {
@@ -23,7 +24,7 @@ import {
 dayjs.extend(utc)
 
 function App() {
-  const { auth, signIn, user } = useAuth()
+  const { auth, user } = useAuth()
 
   const addModal = useModal(false)
   const removeModal = useModal(false)
@@ -35,12 +36,7 @@ function App() {
   const [selectedCheckIn, setSelectedCheckIn] = useState<number>()
 
   if (!auth || !user) {
-    // TODO: improve design, should still show app bar
-    return (
-      <Flex justify="center" align="center" style={{ height: '100vh' }}>
-        <Button onClick={signIn}>Sign in</Button>
-      </Flex>
-    )
+    return <Login />
   }
 
   return (
