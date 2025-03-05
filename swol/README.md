@@ -38,7 +38,7 @@
 - landing page / login design
 - implement circle cursor (should be a setting)
 - non white background color
-- Add orm tool
+- Add one rep max tool
 - Add barbell load calculator
 - Goal Tracker
 

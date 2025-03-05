@@ -38,12 +38,13 @@ export function RemoveCheckInModal({
           </Text>
 
           <Group justify="flex-end" mt="md">
-            <Button variant="default" color="gray" onClick={close}>
+            <Button variant="default" color="gray" radius="md" onClick={close}>
               Cancel
             </Button>
             <Button
               type="button"
               color="red"
+              radius="md"
               disabled={isPending}
               loading={isPending}
               onClick={async () => {

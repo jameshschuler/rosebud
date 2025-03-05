@@ -14,6 +14,7 @@ import { ListSkeleton } from './components/ListSkeleton'
 import { Login } from './components/Login'
 import { NoData } from './components/NoData'
 import { RemoveCheckInModal } from './components/RemoveCheckInModal'
+import { ResponsiveButton } from './components/ui/ResponsiveButton'
 import {
   useAuth,
   useGetCheckIns,
@@ -49,24 +50,19 @@ function App() {
             <Title>Your Check Ins</Title>
             <Flex gap={8} align="center">
               {selectedCheckIn && (
-                <Button
-                  leftSection={<FontAwesomeIcon icon={faTrashCan} size="xl" />}
-                  variant="filled"
+                <ResponsiveButton
                   color="red"
+                  icon={<FontAwesomeIcon icon={faTrashCan} size="lg" />}
                   onClick={removeModal.open}
-                >
-                  Remove Check In
-                </Button>
+                  label="Remove Check In"
+                />
               )}
               {hasCheckIns && (
-                <Button
-                  leftSection={<FontAwesomeIcon icon={faPlus} size="xl" />}
-                  variant="filled"
-                  color="yellow"
+                <ResponsiveButton
+                  icon={<FontAwesomeIcon icon={faPlus} size="lg" />}
                   onClick={addModal.open}
-                >
-                  New Check In
-                </Button>
+                  label="New Check In"
+                />
               )}
             </Flex>
           </Flex>
