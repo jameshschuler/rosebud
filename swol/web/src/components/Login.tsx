@@ -17,6 +17,10 @@ import landing from '../assets/landing.svg'
 import { useAuth } from '../hooks'
 import { AppBar } from './AppBar'
 
+// Welcome to Swol – Stay Consistent, Stay Swole!
+
+// Every rep, every set, every visit—you're making progress. Check in, log your PRs, and keep crushing your goals. Let’s get stronger together!
+
 export function Login() {
   const { signIn } = useAuth()
 

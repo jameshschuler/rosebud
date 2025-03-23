@@ -31,21 +31,31 @@
 
 ## Misc
 
-- Deploy to render
 - PWA Support
-- Mobile design / usability
 - Tests
-- landing page / login design
 - implement circle cursor (should be a setting)
 - non white background color
 - Add one rep max tool
 - Add barbell load calculator
 - Goal Tracker
+- use antfu/eslint-config for FE
 
 ## Profile Setup / Onboarding
 
 - Set check ins per week goal
 - Each week this is completed counts towards some achievement
+- On initial login show prompt for user to select number of check ins each week they want to hit
+- If user skips initial goal setting, show alert on profile page icon until goal is set?
+- This can be changed on their profile page
+- Week starts on Monday
+- On each check in, check if the goal has been met
+
+profile_settings (id, user_id, start_date, checkins_per_week) table?
+
+Should always start following monday from when setting is set
+Shouldn't be able to set goal to more than days left in the week
+
+Need BE service / api
 
 # Devlog
 
