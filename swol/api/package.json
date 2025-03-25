@@ -1,6 +1,7 @@
 {
   "name": "swol-backend",
   "type": "module",
+  "version": "1.0.0",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "lint": "eslint .",
@@ -9,6 +10,7 @@
   "dependencies": {
     "@hono/node-server": "^1.13.8",
     "@hono/zod-openapi": "^0.19.2",
+    "@scalar/hono-api-reference": "^0.7.2",
     "hono": "^4.7.4",
     "hono-pino": "^0.7.2",
     "pino": "^9.6.0",
