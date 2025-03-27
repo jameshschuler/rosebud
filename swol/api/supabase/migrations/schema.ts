@@ -1,16 +1,9 @@
 import { sql } from 'drizzle-orm'
-import { bigint, boolean, foreignKey, pgPolicy, pgSchema, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
-import { createSelectSchema } from 'drizzle-zod'
-
-const authSchema = pgSchema('auth')
-
-export const users = authSchema.table('users', {
-  id: uuid('id').primaryKey(),
-})
+import { bigint, boolean, foreignKey, pgPolicy, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
 
 export const gymCheckin = pgTable('gym_checkin', {
   // You can use { mode: "bigint" } if numbers are exceeding js number limitations
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity({ name: 'gym_checkin_id_seq', startWith: 1, increment: 1, minValue: 1, maxValue: '9223372036854775807', cache: 1 }),
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity({ name: 'gym_checkin_id_seq', startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
   userId: uuid('user_id').notNull(),
   checkinDate: timestamp('checkin_date', { withTimezone: true, mode: 'string' }).notNull(),
@@ -28,7 +21,7 @@ export const gymCheckin = pgTable('gym_checkin', {
 
 export const userProfile = pgTable('user_profile', {
   // You can use { mode: "bigint" } if numbers are exceeding js number limitations
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity({ name: 'user_profile_id_seq', startWith: 1, increment: 1, minValue: 1, maxValue: '9223372036854775807', cache: 1 }),
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity({ name: 'user_profile_id_seq', startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
   userId: uuid('user_id').notNull(),
   email: varchar().notNull(),
@@ -50,15 +43,3 @@ export const userProfile = pgTable('user_profile', {
   pgPolicy('Enable select for users based on user_id', { as: 'permissive', for: 'select', to: ['authenticated'] }),
   pgPolicy('Disable delete', { as: 'permissive', for: 'delete', to: ['public'] }),
 ])
-
-export const selectCheckInsSchema = createSelectSchema(gymCheckin)
-  .pick({
-    id: true,
-    checkinDate: true,
-  })
-  .transform((data) => {
-    return {
-      id: data.id,
-      checkInDate: data.checkinDate,
-    }
-  })
