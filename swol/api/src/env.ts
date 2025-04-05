@@ -5,6 +5,8 @@ export const EnvSchema = z.object({
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('debug'),
   NODE_ENV: z.string().default('development'),
   DATABASE_URL: z.string().url(),
+  SUPABASE_URL: z.string().url(),
+  SUPABASE_ANON_KEY: z.string(),
 })
 
 export type env = z.infer<typeof EnvSchema>
