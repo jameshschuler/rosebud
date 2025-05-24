@@ -5,7 +5,7 @@ import checkIns from './routes/checkIns/checkIns'
 
 const app = createApp()
 
-app.get('/', (c) => {
+app.get('/api', (c) => {
   return c.text('Hello Hono!')
 })
 
@@ -17,7 +17,7 @@ const routes = [
 ] as const
 
 routes.forEach((route) => {
-  app.route('/', route)
+  app.route('/api', route)
 })
 
 export type AppType = typeof routes[number]

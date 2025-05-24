@@ -10,12 +10,12 @@ import {
   Title,
   VisuallyHidden,
 } from '@mantine/core'
-import '@mantine/core/styles.css'
-import '@mantine/dates/styles.css'
-import '@mantine/notifications/styles.css'
 import landing from '../assets/landing.svg'
 import { useAuth } from '../hooks'
 import { AppBar } from './AppBar'
+import '@mantine/core/styles.css'
+import '@mantine/dates/styles.css'
+import '@mantine/notifications/styles.css'
 
 // Welcome to Swol – Stay Consistent, Stay Swole!
 

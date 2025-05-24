@@ -7,6 +7,7 @@ export const EnvSchema = z.object({
   DATABASE_URL: z.string().url(),
   SUPABASE_URL: z.string().url(),
   SUPABASE_ANON_KEY: z.string(),
+  CLIENT_ORIGIN: z.string().url().default('http://localhost:5173'),
 })
 
 export type env = z.infer<typeof EnvSchema>

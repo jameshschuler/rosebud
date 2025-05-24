@@ -63,7 +63,8 @@ export function RemoveCheckInModal({
                   })
 
                   close()
-                } catch {
+                }
+                catch {
                   error({
                     message:
                       'Unable to remove check in. Please try again in a moment.',

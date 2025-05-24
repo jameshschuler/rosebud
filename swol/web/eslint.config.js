@@ -1,30 +1,35 @@
-import js from '@eslint/js'
-import eslintConfigPrettier from 'eslint-config-prettier'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import globals from 'globals'
-import tseslint from 'typescript-eslint'
+import antfu from '@antfu/eslint-config'
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+export default antfu(
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+    ignores: ['dist', 'node_modules'],
+    type: 'app',
+    formatters: true,
+    typescript: true,
+    stylistic: {
+      indent: 2,
+      semi: false,
+      quotes: 'single',
     },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+    react: true,
+    markdown: true,
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
+  },
+  {
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
+      'no-console': 'warn',
+      'style/semi': ['error', 'never'],
+      'node/no-process-env': ['error'],
     },
   },
-  eslintConfigPrettier,
 )

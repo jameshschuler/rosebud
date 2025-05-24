@@ -39,6 +39,7 @@
 - Add barbell load calculator
 - Goal Tracker
 - use antfu/eslint-config for FE
+- Add ActionBar for mobile
 
 ## Profile Setup / Onboarding
 

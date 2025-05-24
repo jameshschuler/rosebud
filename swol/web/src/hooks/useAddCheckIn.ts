@@ -1,7 +1,9 @@
-import { PostgrestSingleResponse } from '@supabase/supabase-js'
+import type { PostgrestSingleResponse } from '@supabase/supabase-js'
+import type {
+  UseMutationResult,
+} from '@tanstack/react-query'
 import {
   useMutation,
-  UseMutationResult,
   useQueryClient,
 } from '@tanstack/react-query'
 import dayjs from 'dayjs'
@@ -16,8 +18,8 @@ async function addCheckIn({
   date,
   userId,
 }: AddCheckInRequest): Promise<
-  PostgrestSingleResponse<{ id: number; checkin_date: string }>
-> {
+    PostgrestSingleResponse<{ id: number, checkin_date: string }>
+  > {
   return supabase
     .from('gym_checkin')
     .insert({

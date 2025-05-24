@@ -1,7 +1,9 @@
 import type { Schema } from 'hono'
 import type { AppBindings, AppOpenAPI } from './types'
+import env from '@/env'
 import { OpenAPIHono } from '@hono/zod-openapi'
 import { pinoLogger } from 'hono-pino'
+import { cors } from 'hono/cors'
 import { requestId } from 'hono/request-id'
 import { notFound, onError, serveEmojiFavicon } from 'stoker/middlewares'
 import { defaultHook } from 'stoker/openapi'
@@ -16,6 +18,10 @@ export function createRouter() {
 export default function createApp() {
   const app = createRouter()
 
+  app.use('/api/*', cors({
+    origin: env.CLIENT_ORIGIN,
+    allowHeaders: ['Authorization', 'Content-Type'],
+  }))
   app.use(requestId())
     .use(serveEmojiFavicon('🏋️'))
     .use(pinoLogger())

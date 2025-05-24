@@ -24,7 +24,7 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
     },
 
     validate: {
-      date: (value) => (!value ? 'Date is required' : null),
+      date: value => (!value ? 'Date is required' : null),
     },
   })
 
@@ -54,7 +54,8 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
                 })
 
                 close()
-              } catch {
+              }
+              catch {
                 error({
                   message:
                     'Unable to add check in. Please try again in a moment.',
