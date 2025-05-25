@@ -1,12 +1,12 @@
-import type { Schema } from 'hono'
-import type { AppBindings, AppOpenAPI } from './types'
 import env from '@/env'
 import { OpenAPIHono } from '@hono/zod-openapi'
+import type { Schema } from 'hono'
 import { pinoLogger } from 'hono-pino'
 import { cors } from 'hono/cors'
 import { requestId } from 'hono/request-id'
 import { notFound, onError, serveEmojiFavicon } from 'stoker/middlewares'
 import { defaultHook } from 'stoker/openapi'
+import type { AppBindings, AppOpenAPI } from './types'
 
 export function createRouter() {
   return new OpenAPIHono<AppBindings>({
@@ -17,9 +17,10 @@ export function createRouter() {
 
 export default function createApp() {
   const app = createRouter()
+  const clientOrigin = env.CLIENT_ORIGIN.split(',').map(s => s.trim())
 
   app.use('/api/*', cors({
-    origin: env.CLIENT_ORIGIN,
+    origin: clientOrigin,
     allowHeaders: ['Authorization', 'Content-Type'],
   }))
   app.use(requestId())
