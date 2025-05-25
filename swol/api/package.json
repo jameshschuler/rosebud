@@ -6,7 +6,7 @@
     "dev": "bun --watch src/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "start": "node ./dist/index.js",
+    "start": "bun run ./dist/index.js",
     "typecheck": "bun typecheck",
     "build": "bun build src/index.ts --outdir dist --format esm --minify --sourcemap --target node"
   },
