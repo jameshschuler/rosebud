@@ -4,6 +4,49 @@
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.activity": {
+      "name": "activity",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "activity_id_seq",
+            "increment": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "startWith": "1",
+            "cache": "1",
+            "cycle": false,
+            "schema": "public"
+          }
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": true
+    },
     "public.gym_checkin": {
       "name": "gym_checkin",
       "schema": "",
@@ -43,10 +86,31 @@
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
+        },
+        "activity_id": {
+          "name": "activity_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'1'"
         }
       },
       "indexes": {},
       "foreignKeys": {
+        "gym_checkin_activity_id_fkey": {
+          "name": "gym_checkin_activity_id_fkey",
+          "tableFrom": "gym_checkin",
+          "tableTo": "activity",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "activity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "gym_checkin_user_id_fkey": {
           "name": "gym_checkin_user_id_fkey",
           "tableFrom": "gym_checkin",
@@ -257,6 +321,14 @@
     "columns": {}
   },
   "internal": {
-    "tables": {}
+    "tables": {
+      "gym_checkin": {
+        "columns": {
+          "activity_id": {
+            "isDefaultAnExpression": true
+          }
+        }
+      }
+    }
   }
 }
