@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm'
 import { bigint, boolean, foreignKey, pgPolicy, pgSchema, pgTable, text, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import z from 'zod'
 
 const authSchema = pgSchema('auth')
 
@@ -67,14 +68,22 @@ export const userProfile = pgTable('user_profile', {
 ])
 
 export const selectCheckInsSchema = createSelectSchema(gymCheckin)
+  .extend({
+    activity: z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+  })
   .pick({
     id: true,
     checkinDate: true,
+    activity: true,
   })
   .transform((data) => {
     return {
       id: data.id,
       checkInDate: data.checkinDate,
+      activity: data.activity,
     }
   })
 
