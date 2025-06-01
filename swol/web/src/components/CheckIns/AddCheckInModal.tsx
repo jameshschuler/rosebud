@@ -1,10 +1,10 @@
+import { useAddCheckIn } from '@/hooks/api/useAddCheckIn'
 import { Button, Group, Modal } from '@mantine/core'
 import { DateInput } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import dayjs from 'dayjs'
-import { useAuth } from '../hooks'
-import { useAddCheckIn } from '../hooks/useAddCheckIn'
-import { useNotifications } from '../hooks/useNotifications'
+import { useAuth } from '../../hooks'
+import { useNotifications } from '../../hooks/useNotifications'
 
 interface AddCheckInModalProps {
   opened: boolean
@@ -45,8 +45,8 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
                 }
 
                 await addCheckIn({
-                  userId: user.id,
-                  date: values.date,
+                  checkinDate: dayjs(values.date).utc().format(),
+                  activityId: 1
                 })
 
                 success({

@@ -2,9 +2,11 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import type { Client } from '../useGetHonoClient'
 import { useGetHonoClient } from '../useGetHonoClient'
 
+export const CHECKINS_QUERY_KEY = ['check-ins']
+
 export function getAllCheckInsQueryOptions(client: Client) {
   return queryOptions({
-    queryKey: ['get-all-check-ins'],
+    queryKey: CHECKINS_QUERY_KEY,
     queryFn: async () => {
       if (!client) {
         return
@@ -15,7 +17,6 @@ export function getAllCheckInsQueryOptions(client: Client) {
         throw new Error('server error')
       }
       const data = await res.json()
-      console.log(data)
       return data
     },
   })

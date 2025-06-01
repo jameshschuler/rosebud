@@ -10,12 +10,12 @@ import {
   Title,
   VisuallyHidden,
 } from '@mantine/core'
-import landing from '../assets/landing.svg'
-import { useAuth } from '../hooks'
-import { AppBar } from './AppBar'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
 import '@mantine/notifications/styles.css'
+import landing from '../assets/landing.svg'
+import { useAuth } from '../hooks'
+import { AppBar } from './AppBar'
 
 // Welcome to Swol – Stay Consistent, Stay Swole!
 
@@ -45,7 +45,6 @@ export function Login() {
             flex={{ base: 0, lg: 1 }}
             p={{ base: 0, md: 24 }}
             direction="column"
-            align={{ base: 'center', lg: 'normal' }}
           >
             <Title order={1} size={48} fw={500}>
               Welcome to Swol!
