@@ -1,7 +1,11 @@
-import { Button, Flex, Group, Modal, Text } from '@mantine/core'
-import { useAuth } from '../../hooks'
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons'
+import { faDumbbell, faRunning } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ActionIcon, Divider, Flex, Modal, Text, ThemeIcon } from '@mantine/core'
+import { useAuth, useModal } from '../../hooks'
 import { useNotifications } from '../../hooks/useNotifications'
 import { useRemoveCheckIn } from '../../hooks/useRemoveCheckIn'
+import { ConfirmModal } from './ConfirmModal'
 
 interface CheckInDetailsModalProps {
   selectedCheckIn?: number
@@ -16,6 +20,8 @@ export function CheckInDetailsModal({
 }: CheckInDetailsModalProps) {
   const { user } = useAuth()
   const { error, success } = useNotifications()
+
+  const confirmModal = useModal(false)
 
   const { mutateAsync: removeCheckIn, isPending } = useRemoveCheckIn()
   async function handleRemoveCheckIn() {
@@ -33,6 +39,7 @@ export function CheckInDetailsModal({
         message: 'Removed check in successfully.',
       })
 
+      confirmModal.close()
       close()
     }
     catch {
@@ -44,44 +51,40 @@ export function CheckInDetailsModal({
   }
 
   return (
-    <Modal.Root opened={opened} onClose={close} size="lg">
-      <Modal.Overlay />
-      <Modal.Content>
-        <Modal.Header>
-          <Modal.Title>
-            <Text size="xl" fw={600}>
-              Check In Details
+    <>
+      <Modal.Root opened={opened} onClose={close} size="lg">
+        <Modal.Overlay />
+        <Modal.Content>
+          <Modal.Header>
+            <Modal.Title>
+              <Text size="xl" fw={600}>
+                Check In Details
+              </Text>
+            </Modal.Title>
+            <Modal.CloseButton />
+          </Modal.Header>
+          <Modal.Body px={24}>
+            <Text size="md" fw={500}>
+              Activities
             </Text>
-          </Modal.Title>
-          <Modal.CloseButton />
-        </Modal.Header>
-        <Modal.Body p={24}>
-          <Text size="md" fw={500}>
-            Are you sure you want to remove this check in? This action cannot be
-            undone.
-          </Text>
-
-
-          <Flex>
-            <Button
-              type="button"
-              color="red"
-              radius="md"
-              disabled={isPending}
-              loading={isPending}
-              onClick={handleRemoveCheckIn}
-            >
-              Yes, remove it
-            </Button>
-          </Flex>
-
-          <Group justify="flex-end" mt="md">
-            <Button variant="default" color="gray" radius="md" onClick={close}>
-              Close
-            </Button>
-          </Group>
-        </Modal.Body>
-      </Modal.Content>
-    </Modal.Root>
+            <Flex gap={'xs'} mt={'xs'}>
+              <ThemeIcon variant="outline" size='lg' p='md'>
+                <FontAwesomeIcon icon={faDumbbell} size='lg' />
+              </ThemeIcon>
+              <ThemeIcon variant="outline" size='lg' p='md'>
+                <FontAwesomeIcon icon={faRunning} size='lg' />
+              </ThemeIcon>
+            </Flex>
+            <Divider my='lg' />
+            <Flex align={'center'} justify='center'>
+              <ActionIcon variant="light" aria-label="Remove check in" color='red' onClick={confirmModal.open}>
+                <FontAwesomeIcon icon={faTrashAlt} />
+              </ActionIcon>
+            </Flex>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
+      <ConfirmModal opened={confirmModal.opened} close={confirmModal.close} onConfirm={handleRemoveCheckIn} isPending={isPending} />
+    </>
   )
 }
