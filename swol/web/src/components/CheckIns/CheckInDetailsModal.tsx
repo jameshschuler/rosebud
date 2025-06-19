@@ -3,8 +3,8 @@ import { faDumbbell, faRunning } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ActionIcon, Divider, Flex, Modal, Text, ThemeIcon, Tooltip } from '@mantine/core'
 import { useAuth, useModal } from '../../hooks'
+import { useRemoveCheckIn } from '../../hooks/api/useRemoveCheckIn'
 import { useNotifications } from '../../hooks/useNotifications'
-import { useRemoveCheckIn } from '../../hooks/useRemoveCheckIn'
 import { ConfirmModal } from './ConfirmModal'
 
 interface CheckInDetailsModalProps {
@@ -24,6 +24,7 @@ export function CheckInDetailsModal({
   const confirmModal = useModal(false)
 
   const { mutateAsync: removeCheckIn, isPending } = useRemoveCheckIn()
+
   async function handleRemoveCheckIn() {
     try {
       if (!selectedCheckIn || !user) {
@@ -31,7 +32,6 @@ export function CheckInDetailsModal({
       }
 
       await removeCheckIn({
-        userId: user?.id,
         checkInId: selectedCheckIn,
       })
 
