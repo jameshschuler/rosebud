@@ -105,12 +105,13 @@ export const insertCheckInsSchema = createInsertSchema(gymCheckin, {
         return false
       }
     }, 'Please enter a valid UTC date and time in the format: YYYY-MM-DDThh:mm:ssZ or YYYY-MM-DDThh:mm:ss+00:00 (example: 2025-04-01T01:01:40Z)'),
-  activityId: schema => schema
-    .refine(value => value === 1 || value === 2, 'The activity Id must be either 1 or 2.'),
 })
+  .extend({
+    activityIds: z.array(z.number()).min(1, 'At least one activity must be selected.'),
+  })
   .required({
     checkinDate: true,
-    activityId: true,
+    activityIds: true,
   })
   .omit({
     id: true,

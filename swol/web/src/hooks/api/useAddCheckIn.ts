@@ -3,7 +3,7 @@ import { Client, useGetHonoClient } from "../useGetHonoClient"
 import { CHECKINS_QUERY_KEY } from "./useGetCheckIns"
 
 export interface AddCheckInRequest {
-    activityId: 1 | 2
+    activityIds: number[]
     checkinDate: string
 }
 

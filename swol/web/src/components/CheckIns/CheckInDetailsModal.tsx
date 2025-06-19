@@ -1,7 +1,7 @@
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { faDumbbell, faRunning } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ActionIcon, Divider, Flex, Modal, Text, ThemeIcon } from '@mantine/core'
+import { ActionIcon, Divider, Flex, Modal, Text, ThemeIcon, Tooltip } from '@mantine/core'
 import { useAuth, useModal } from '../../hooks'
 import { useNotifications } from '../../hooks/useNotifications'
 import { useRemoveCheckIn } from '../../hooks/useRemoveCheckIn'
@@ -68,12 +68,16 @@ export function CheckInDetailsModal({
               Activities
             </Text>
             <Flex gap={'xs'} mt={'xs'}>
-              <ThemeIcon variant="outline" size='lg' p='md'>
-                <FontAwesomeIcon icon={faDumbbell} size='lg' />
-              </ThemeIcon>
-              <ThemeIcon variant="outline" size='lg' p='md'>
-                <FontAwesomeIcon icon={faRunning} size='lg' />
-              </ThemeIcon>
+              <Tooltip label="Strength Training">
+                <ThemeIcon variant="outline" size='lg' p='md'>
+                  <FontAwesomeIcon icon={faDumbbell} size='lg' />
+                </ThemeIcon>
+              </Tooltip>
+              <Tooltip label='Running'>
+                <ThemeIcon variant="outline" size='lg' p='md'>
+                  <FontAwesomeIcon icon={faRunning} size='lg' />
+                </ThemeIcon>
+              </Tooltip>
             </Flex>
             <Divider my='lg' />
             <Flex align={'center'} justify='center'>

@@ -1,5 +1,5 @@
 import { useAddCheckIn } from '@/hooks/api/useAddCheckIn'
-import { Button, Group, Modal } from '@mantine/core'
+import { Button, Checkbox, Group, Modal, Text } from '@mantine/core'
 import { DateInput } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import dayjs from 'dayjs'
@@ -21,56 +21,76 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
     mode: 'uncontrolled',
     initialValues: {
       date: dayjs().toDate(),
+      activityIds: new Array<string>(),
     },
-
     validate: {
       date: value => (!value ? 'Date is required' : null),
+      activityIds: value => (value.length === 0 ? 'At least one activity must be selected' : null),
     },
   })
+
+  const handleOnSubmit = async (values: { activityIds: string[], date: Date }) => {
+    try {
+      if (!user) {
+        return
+      }
+
+      await addCheckIn({
+        checkinDate: dayjs(values.date).utc().format(),
+        activityIds: values.activityIds.map(id => parseInt(id, 10)),
+      })
+
+      success({
+        message: `Added ${values.activityIds.length > 1 ? 'check ins' : 'check in'} successfully.`,
+      })
+
+      close()
+    }
+    catch {
+      error({
+        message:
+          'Unable to add check in. Please try again in a moment.',
+      })
+    }
+  }
 
   return (
     <Modal.Root opened={opened} onClose={close} size="lg">
       <Modal.Overlay />
       <Modal.Content>
         <Modal.Header>
-          <Modal.Title>New Check In</Modal.Title>
+          <Modal.Title>
+            <Text size="xl" fw={600}>
+              New Check In
+            </Text>
+          </Modal.Title>
           <Modal.CloseButton />
         </Modal.Header>
-        <Modal.Body p={24}>
+        <Modal.Body px={24}>
           <form
-            onSubmit={form.onSubmit(async (values) => {
-              try {
-                if (!user) {
-                  return
-                }
-
-                await addCheckIn({
-                  checkinDate: dayjs(values.date).utc().format(),
-                  activityId: 1
-                })
-
-                success({
-                  message: 'Added check in successfully.',
-                })
-
-                close()
-              }
-              catch {
-                error({
-                  message:
-                    'Unable to add check in. Please try again in a moment.',
-                })
-              }
-            })}
+            style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
+            onSubmit={form.onSubmit(handleOnSubmit)}
           >
             <DateInput
               withAsterisk
               label="Date"
               placeholder="Check In Date"
-              key={form.key('date')}
               maxDate={new Date()}
+              key={form.key('date')}
               {...form.getInputProps('date')}
             />
+
+            <Checkbox.Group
+              label="Activities"
+              withAsterisk
+              key={form.key('activityIds')}
+              {...form.getInputProps('activityIds', { type: 'checkbox' })}
+            >
+              <Group mt="xs" gap="xs" dir='column'>
+                <Checkbox value="1" label="Strength Training" />
+                <Checkbox value="2" label="Running" />
+              </Group>
+            </Checkbox.Group>
 
             <Group justify="flex-end" mt="md">
               <Button

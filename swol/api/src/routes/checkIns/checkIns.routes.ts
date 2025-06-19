@@ -30,13 +30,13 @@ export const create = createRoute({
   path: '/check-ins',
   method: 'post',
   request: {
-    body: jsonContentRequired(insertCheckInsSchema, "The check-in to create"),
+    body: jsonContentRequired(insertCheckInsSchema, 'The check-in to create'),
   },
   tags,
   middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.CREATED]: jsonContent(
-      selectCheckInsSchema,
+      z.array(selectCheckInsSchema),
       'The created check-in',
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
@@ -47,8 +47,8 @@ export const create = createRoute({
 })
 
 export const remove = createRoute({
-  path: "/check-ins/{id}",
-  method: "delete",
+  path: '/check-ins/{id}',
+  method: 'delete',
   request: {
     params: IdParamsSchema,
   },
@@ -56,18 +56,18 @@ export const remove = createRoute({
   middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
-      description: "Check-in deleted",
+      description: 'Check-in deleted',
     },
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       notFoundSchema,
-      "Check-in not found",
+      'Check-in not found',
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(IdParamsSchema),
-      "Invalid id error",
+      'Invalid id error',
     ),
   },
-});
+})
 
 export type ListRoute = typeof list
 export type CreateRoute = typeof create
