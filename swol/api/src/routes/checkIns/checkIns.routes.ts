@@ -1,10 +1,11 @@
 import { insertCheckInsSchema, selectCheckInsSchema } from '@/db/schema'
 import { notFoundSchema } from '@/lib/constants'
+import { IdsParamsSchema } from '@/lib/schemas'
 import { authMiddleware } from '@/middlewares/auth'
 import { createRoute, z } from '@hono/zod-openapi'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { jsonContent, jsonContentRequired } from 'stoker/openapi/helpers'
-import { createErrorSchema, IdParamsSchema } from 'stoker/openapi/schemas'
+import { createErrorSchema } from 'stoker/openapi/schemas'
 
 const tags = ['Check-Ins']
 
@@ -47,10 +48,10 @@ export const create = createRoute({
 })
 
 export const remove = createRoute({
-  path: '/check-ins/{id}',
+  path: '/check-ins',
   method: 'delete',
   request: {
-    params: IdParamsSchema,
+    query: IdsParamsSchema,
   },
   tags,
   middleware: [authMiddleware] as const,
@@ -63,7 +64,7 @@ export const remove = createRoute({
       'Check-in not found',
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
-      createErrorSchema(IdParamsSchema),
+      createErrorSchema(IdsParamsSchema),
       'Invalid id error',
     ),
   },

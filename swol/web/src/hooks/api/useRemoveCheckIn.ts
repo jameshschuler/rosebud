@@ -1,24 +1,24 @@
 import {
-  useMutation,
-  useQueryClient,
+    useMutation,
+    useQueryClient,
 } from '@tanstack/react-query'
 import { Client, useGetHonoClient } from "../useGetHonoClient"
 import { CHECKINS_QUERY_KEY } from "./useGetCheckIns"
 
 export interface RemoveCheckInRequest {
-  checkInId: number
+    checkInIds: number[]
 }
 
 export const removeCheckIn = async (client: Client, payload: RemoveCheckInRequest) => {
     try {
-        const response = await client!["check-ins"][':id'].$delete({
-            param: {
-                id: payload.checkInId,
+        const response = await client!["check-ins"].$delete({
+            query: {
+                ids: payload.checkInIds.join(','),
             },
         })
 
         if (!response.ok) {
-            throw new Error('Unable to remove check in. Please try again in a moment.');
+            throw new Error('Unable to remove check in(s). Please try again in a moment.');
         }
 
         return response.json();

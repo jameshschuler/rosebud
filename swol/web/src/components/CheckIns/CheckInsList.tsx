@@ -1,18 +1,16 @@
 import { useModal } from '@/hooks';
-import { Box, Button, Divider, Flex, Title } from '@mantine/core';
-import dayjs from 'dayjs';
+import { Activity, CheckInDisplayItem } from '@/types/checkIns';
+import { Box, Divider, Flex, Title } from '@mantine/core';
 import { useState } from 'react';
+import { CheckInCard } from './CheckInCard';
 import { CheckInDetailsModal } from './CheckInDetailsModal';
 
 interface CheckInsListProps {
-  checkIns: Map<string, Map<string, {
-    id: number;
-    checkInDate: string;
-  }[]>>
+  checkIns: CheckInDisplayItem
 }
 
 export function CheckInsList({ checkIns }: CheckInsListProps) {
-  const [selectedCheckIn, setSelectedCheckIn] = useState<number>()
+  const [selectedCheckIns, setSelectedCheckIns] = useState<{ checkInDate: string, details: { id: number, activity: Activity }[] }>()
   const detailsModal = useModal(false)
 
   return (
@@ -28,23 +26,14 @@ export function CheckInsList({ checkIns }: CheckInsListProps) {
                     {month}
                   </Title>
                   <Flex gap={16} wrap="wrap" mt="md">
-                    {data.map(d => (
-                      <Button
-                        style={{
-                          boxShadow: `4px 4px 0px ${selectedCheckIn === d.id ? 'var(--mantine-color-yellow-6)' : 'black'}`,
-                        }}
-                        onClick={() => {
-                          setSelectedCheckIn(d.id)
-                          detailsModal.open()
-                        }}
-                        w={140}
-                        key={d.id}
-                        variant="outline"
-                        color="black"
-                        radius="md"
-                      >
-                        {dayjs(d.checkInDate).format('MMMM DD')}
-                      </Button>
+                    {[...data].map(([checkInDate, details]) => (
+                      <CheckInCard key={checkInDate} activityCount={details.length} checkInDate={checkInDate} onClick={() => {
+                        setSelectedCheckIns({
+                          checkInDate,
+                          details
+                        })
+                        detailsModal.open()
+                      }} />
                     ))}
                   </Flex>
                 </Box>
@@ -55,11 +44,10 @@ export function CheckInsList({ checkIns }: CheckInsListProps) {
         ))}
       </Flex>
       <CheckInDetailsModal
-        selectedCheckIn={selectedCheckIn}
+        selectedCheckIns={selectedCheckIns}
         opened={detailsModal.opened}
         close={() => {
-          setSelectedCheckIn(undefined)
-
+          setSelectedCheckIns(undefined)
           detailsModal.close()
         }}
       />

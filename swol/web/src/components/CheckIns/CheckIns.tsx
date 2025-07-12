@@ -10,7 +10,6 @@ import { NoData } from "./NoData";
 export function CheckIns() {
     const { isLoading, data, error } = useGetAllCheckIns()
     const { checkIns, hasCheckIns } = useTransformCheckIns(data)
-
     const addModal = useModal(false)
 
     return (
