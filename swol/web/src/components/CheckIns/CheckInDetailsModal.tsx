@@ -50,11 +50,13 @@ export function CheckInDetailsModal({
       confirmModal.close()
       close()
     }
-    catch {
+    catch (err) {
       error({
         message:
           'Unable to remove check in. Please try again in a moment.',
       })
+    } finally {
+      setSelectedActivities(new Set())
     }
   }
 
@@ -76,7 +78,10 @@ export function CheckInDetailsModal({
 
   return (
     <>
-      <Modal.Root opened={opened} onClose={close} size="lg">
+      <Modal.Root opened={opened} onClose={() => {
+        setSelectedActivities(new Set())
+        close()
+      }} size="lg">
         <Modal.Overlay />
         <Modal.Content>
           <Modal.Header>

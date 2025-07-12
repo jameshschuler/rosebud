@@ -20,8 +20,6 @@ export const removeCheckIn = async (client: Client, payload: RemoveCheckInReques
         if (!response.ok) {
             throw new Error('Unable to remove check in(s). Please try again in a moment.');
         }
-
-        return response.json();
     } catch (err) {
         throw err;
     }
