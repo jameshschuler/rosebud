@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
 import { supabase } from './lib'
 
-async function signIn() {
-  await supabase.auth.signInWithOAuth({ provider: 'github' })
+async function signIn(provider: 'github' | 'google' = 'github') {
+  await supabase.auth.signInWithOAuth({ provider })
 }
 
 async function signOut() {

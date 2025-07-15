@@ -5,6 +5,6 @@ export const AuthContext = createContext({
   auth: false,
   session: null as Session | null,
   user: null as User | null,
-  signIn: () => {},
-  signOut: () => {},
+  signIn: (provider: 'github' | 'google') => { },
+  signOut: () => { },
 })
