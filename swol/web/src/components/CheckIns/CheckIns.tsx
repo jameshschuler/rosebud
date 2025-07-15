@@ -23,7 +23,7 @@ export function CheckIns() {
                         {error.message}
                     </div>
                 )}
-                {!hasCheckIns && <NoData onAction={addModal.open} />}
+                {!isLoading && !hasCheckIns && <NoData onAction={addModal.open} />}
                 {!error && !isLoading && hasCheckIns && (
                     <CheckInsList checkIns={checkIns} />
                 )}
