@@ -35,8 +35,6 @@
 
 ## Misc
 
-- Support google oauth
-- PWA Support
 - Tests
 - non white background color
 - Add one rep max tool
