@@ -11,13 +11,13 @@ export function useTransformCheckIns(
   data?: CheckIn[]
 ) {
   const checkIns = useMemo(() => {
-    const checkIns = new Map<
+    const groupedCheckInsByYear = new Map<
       string,
       Map<string, Map<string, { id: number, activity: Activity }[]>>
     >()
 
     if (!data) {
-      return checkIns
+      return groupedCheckInsByYear
     }
 
     data.forEach((d) => {
@@ -25,11 +25,11 @@ export function useTransformCheckIns(
       const year = date.format('YYYY')
       const month = date.format('MMMM')
 
-      if (!checkIns.has(year)) {
-        checkIns.set(year, new Map())
+      if (!groupedCheckInsByYear.has(year)) {
+        groupedCheckInsByYear.set(year, new Map())
       }
 
-      const yearMap = checkIns.get(year)
+      const yearMap = groupedCheckInsByYear.get(year)
       const monthCheckIns = yearMap?.get(month)
       if (!monthCheckIns) {
         yearMap?.set(month, new Map([
@@ -46,8 +46,15 @@ export function useTransformCheckIns(
       }
     })
 
+    const sortedYearEntries = new Map([...groupedCheckInsByYear.entries()].sort((a, b) => {
+      const yearA = a[0];
+      const yearB = b[0];
+
+      return parseInt(yearB) - parseInt(yearA);
+    }));
+
     // Iterate over each year's map and sort its months and dates
-    checkIns.forEach((yearMap, year) => {
+    sortedYearEntries.forEach((yearMap, year) => {
       yearMap.forEach((monthMap, month) => {
         const sortedDateEntries = [...monthMap.entries()].sort((a, b) => {
           const dateStringA = a[0];
@@ -69,10 +76,10 @@ export function useTransformCheckIns(
         return monthOrder.indexOf(monthB) - monthOrder.indexOf(monthA);
       });
 
-      checkIns.set(year, new Map(sortedMonthEntries));
+      sortedYearEntries.set(year, new Map(sortedMonthEntries));
     });
 
-    return checkIns
+    return sortedYearEntries
   }, [data])
 
   return {

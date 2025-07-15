@@ -35,15 +35,16 @@
 
 ## Misc
 
+- Support google oauth
 - PWA Support
 - Tests
-- implement circle cursor (should be a setting)
 - non white background color
 - Add one rep max tool
 - Add barbell load calculator
 - Goal Tracker
 - use antfu/eslint-config for FE
 - Add ActionBar for mobile
+- Better error UI
 
 ## Profile Setup / Onboarding
 
@@ -59,19 +60,6 @@ profile_settings (id, user_id, start_date, checkins_per_week) table?
 
 Should always start following monday from when setting is set
 Shouldn't be able to set goal to more than days left in the week
-
-Need BE service / api
-
-# Devlog
-
-### 02/16/25
-
-- [x] Deploy to render
-- [x] Pick a font
-
-### 03/1/25
-
-- [x] Clean up anon design (landing page / login design)
 
 # React + TypeScript + Vite
 
