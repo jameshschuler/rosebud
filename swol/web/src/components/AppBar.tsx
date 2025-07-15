@@ -16,7 +16,7 @@ export function AppBar() {
     .join('')
 
   return (
-    <Flex justify="space-between" align="center">
+    <Flex justify="space-between" align="center" p={{ base: 'md', 'xs': 'xl' }}>
       <Flex align="center" gap={16}>
         <Image src={swol} h={50} />
         <Title>Swol</Title>

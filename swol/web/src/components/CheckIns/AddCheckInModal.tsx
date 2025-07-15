@@ -44,6 +44,7 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
         message: `Added ${values.activityIds.length > 1 ? 'check ins' : 'check in'} successfully.`,
       })
 
+      form.reset()
       close()
     }
     catch {

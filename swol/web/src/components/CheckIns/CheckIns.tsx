@@ -13,7 +13,7 @@ export function CheckIns() {
     const addModal = useModal(false)
 
     return (
-        <>
+        <Box>
             <CheckInsHeader hasCheckIns={hasCheckIns} onAddCheckIn={addModal.open} />
             <Box py="xl">
                 {isLoading && <ListSkeleton />}
@@ -30,6 +30,6 @@ export function CheckIns() {
             </Box>
 
             <AddCheckInModal opened={addModal.opened} close={addModal.close} />
-        </>
+        </Box>
     )
 }

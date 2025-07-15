@@ -68,6 +68,7 @@ export function Login() {
                 <FontAwesomeIcon icon={faGithub} size="2xl" />
                 <VisuallyHidden>Github</VisuallyHidden>
               </ActionIcon>
+              {/* TODO: add google sign in support */}
               <ActionIcon size={48} radius="xl" variant="outline" color="black">
                 <FontAwesomeIcon icon={faGoogle} size="2xl" />
                 <VisuallyHidden>Google</VisuallyHidden>
