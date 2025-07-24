@@ -1,1 +1,3 @@
-# TODO - What is this project?
+# Swol
+
+### Exercise activity check in tracker
