@@ -81,14 +81,13 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
               {...form.getInputProps('date')}
             />
 
-            {/* TODO: validation message too close to input */}
             <Checkbox.Group
               label="Activities"
               withAsterisk
               key={form.key('activityIds')}
               {...form.getInputProps('activityIds', { type: 'checkbox' })}
             >
-              <Group mt="xs" gap="xs" dir='column'>
+              <Group my="xs" gap="xs" dir='column'>
                 <Checkbox value="1" label="Strength Training" />
                 <Checkbox value="2" label="Running" />
               </Group>

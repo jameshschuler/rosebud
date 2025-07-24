@@ -7,7 +7,6 @@ const monthOrder = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-// TODO: invalid date error with prod data
 export function useTransformCheckIns(
   data?: CheckIn[]
 ) {
