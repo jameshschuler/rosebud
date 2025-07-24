@@ -18,57 +18,57 @@ export default defineConfig({
       theme_color: '#ffffff',
       icons: [
         {
-          src: "/src/assets/SWOLa36.png",
+          src: "/SWOLa36.png",
           sizes: "36x36",
           type: "image/png",
         },
         {
-          src: "/src/assets/SWOLa48.png",
+          src: "/SWOLa48.png",
           sizes: "48x48",
           type: "image/png",
         },
         {
-          src: "/src/assets/SWOLa72.png",
+          src: "/SWOLa72.png",
           sizes: "72x72",
           type: "image/png",
         },
         {
-          src: "/src/assets/SWOLa96.png",
+          src: "/SWOLa96.png",
           sizes: "96x96",
           type: "image/png",
         },
         {
-          src: "/src/assets/SWOLa120.png",
+          src: "/SWOLa120.png",
           sizes: "120x120",
           type: "image/png",
         },
         {
-          src: "/src/assets/SWOLa152.png",
+          src: "/SWOLa152.png",
           sizes: "152x152",
           type: "image/png",
         },
         {
-          src: "/src/assets/SWOLa167.png",
+          src: "/SWOLa167.png",
           sizes: "167x167",
           type: "image/png",
         },
         {
-          src: "/src/assets/SWOLa180.png",
+          src: "/SWOLa180.png",
           sizes: "180x180",
           type: "image/png",
         },
         {
-          src: '/src/assets/SWOLa192.png',
+          src: '/SWOLa192.png',
           sizes: '192x192',
           type: 'image/png',
         },
         {
-          src: '/src/assets/SWOLa512.png',
+          src: '/SWOLa512.png',
           sizes: '512x512',
           type: 'image/png',
         },
         {
-          src: '/src/assets/SWOLa512.png',
+          src: '/SWOLa512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any maskable', // For maskable icons on Android
