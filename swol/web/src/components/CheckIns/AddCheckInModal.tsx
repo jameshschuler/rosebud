@@ -81,6 +81,7 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
               {...form.getInputProps('date')}
             />
 
+            {/* TODO: validation message too close to input */}
             <Checkbox.Group
               label="Activities"
               withAsterisk

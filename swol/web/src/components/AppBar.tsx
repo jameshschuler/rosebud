@@ -31,13 +31,15 @@ export function AppBar() {
               </Button>
             </Menu.Target>
 
+            {/* TODO: think about better solution for mobile (drawer?) */}
             <Menu.Dropdown>
-              <Menu.Item leftSection={<FontAwesomeIcon icon={faUser} />}>
+              <Menu.Item p={12} leftSection={<FontAwesomeIcon icon={faUser} />}>
                 Profile
               </Menu.Item>
 
               <Menu.Divider />
               <Menu.Item
+                p={12}
                 onClick={() => signOut()}
                 leftSection={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
               >

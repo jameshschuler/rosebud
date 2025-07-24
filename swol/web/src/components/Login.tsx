@@ -19,8 +19,10 @@ import { AppBar } from './AppBar'
 
 // Welcome to Swol – Stay Consistent, Stay Swole!
 
+// TODO: 
 // Every rep, every set, every visit—you're making progress. Check in, log your PRs, and keep crushing your goals. Let’s get stronger together!
 
+// TODO: landing page design
 export function Login() {
   const { signIn } = useAuth()
 

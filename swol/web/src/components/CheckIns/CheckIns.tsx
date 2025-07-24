@@ -4,11 +4,13 @@ import { Box } from "@mantine/core";
 import { AddCheckInModal } from "./AddCheckInModal";
 import { CheckInsHeader } from "./CheckInsHeader";
 import { CheckInsList } from "./CheckInsList";
+import { Error } from "./Error";
 import { ListSkeleton } from "./ListSkeleton";
 import { NoData } from "./NoData";
 
+// TODO: figure out "Error:["check-ins"] data is undefined
 export function CheckIns() {
-    const { isLoading, data, error } = useGetAllCheckIns()
+    const { isLoading, data, error, refetch } = useGetAllCheckIns()
     const { checkIns, hasCheckIns } = useTransformCheckIns(data)
     const addModal = useModal(false)
 
@@ -17,13 +19,12 @@ export function CheckIns() {
             <CheckInsHeader hasCheckIns={hasCheckIns} onAddCheckIn={addModal.open} />
             <Box py="xl">
                 {isLoading && <ListSkeleton />}
-                {error && (
-                    <div>
-                        Error:
-                        {error.message}
-                    </div>
-                )}
-                {!isLoading && !hasCheckIns && <NoData onAction={addModal.open} />}
+                {error && <Error message={error.message} onRetry={async () => {
+                    await refetch()
+                }}
+                />
+                }
+                {!isLoading && !hasCheckIns && !error && <NoData onAction={addModal.open} />}
                 {!error && !isLoading && hasCheckIns && (
                     <CheckInsList checkIns={checkIns} />
                 )}
