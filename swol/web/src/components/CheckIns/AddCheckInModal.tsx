@@ -1,8 +1,10 @@
 import { useAddCheckIn } from '@/hooks/api/useAddCheckIn'
-import { Button, Checkbox, Group, Modal, Text } from '@mantine/core'
-import { DateInput } from '@mantine/dates'
+import { Button, Checkbox, Flex, Group, Modal, Text } from '@mantine/core'
+import { DatePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
+import { useMediaQuery } from '@mantine/hooks'
 import dayjs from 'dayjs'
+import { useState } from 'react'
 import { useAuth } from '../../hooks'
 import { useNotifications } from '../../hooks/useNotifications'
 
@@ -15,7 +17,11 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
   const { user } = useAuth()
   const { success, error } = useNotifications()
 
+  const isMobile = useMediaQuery('(max-width: 768px)')
+
   const { mutateAsync: addCheckIn, isPending } = useAddCheckIn()
+
+  const [selectedDate, setSelectedDate] = useState<Date>(dayjs().toDate())
 
   const form = useForm({
     mode: 'uncontrolled',
@@ -72,14 +78,18 @@ export function AddCheckInModal({ opened, close }: AddCheckInModalProps) {
             style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
             onSubmit={form.onSubmit(handleOnSubmit)}
           >
-            <DateInput
-              withAsterisk
-              label="Date"
-              placeholder="Check In Date"
-              maxDate={new Date()}
-              key={form.key('date')}
-              {...form.getInputProps('date')}
-            />
+            <Flex justify='center'>
+              <DatePicker numberOfColumns={isMobile ? 1 : 2} value={selectedDate} onChange={(date) => {
+                form.setFieldValue('date', date as Date);
+                form.validateField('date');
+                setSelectedDate(date as Date);
+              }} />
+            </Flex>
+            {form.errors.date && (
+              <Text c="red" size="xs">
+                {form.errors.date}
+              </Text>
+            )}
 
             <Checkbox.Group
               label="Activities"
