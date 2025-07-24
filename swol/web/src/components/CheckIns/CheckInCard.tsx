@@ -23,7 +23,7 @@ export function CheckInCard({ checkInDate, onClick, activityCount }: CheckInCard
                 <Badge size="xs" color="blue">{activityCount}</Badge>
             }
         >
-            {dayjs(checkInDate).format('MMMM DD')}
+            {dayjs(checkInDate, 'MM-DD-YYYY').format('MMMM DD')}
         </Button>
     )
 }

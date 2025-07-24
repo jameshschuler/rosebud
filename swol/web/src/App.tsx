@@ -4,6 +4,7 @@ import '@mantine/dates/styles.css'
 import { useMediaQuery } from '@mantine/hooks'
 import '@mantine/notifications/styles.css'
 import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import utc from 'dayjs/plugin/utc'
 import { AppBar } from './components/AppBar'
 import { CheckIns } from './components/CheckIns/CheckIns'
@@ -13,6 +14,7 @@ import {
 } from './hooks'
 
 dayjs.extend(utc)
+dayjs.extend(customParseFormat)
 
 function App() {
   const { auth, user } = useAuth()

@@ -9,7 +9,7 @@ export function getAllCheckInsQueryOptions(client: Client) {
     queryKey: CHECKINS_QUERY_KEY,
     queryFn: async () => {
       if (!client) {
-        return
+        return []
       }
 
       const res = await client['check-ins'].$get()

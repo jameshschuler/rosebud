@@ -8,7 +8,6 @@ import { Error } from "./Error";
 import { ListSkeleton } from "./ListSkeleton";
 import { NoData } from "./NoData";
 
-// TODO: figure out "Error:["check-ins"] data is undefined
 export function CheckIns() {
     const { isLoading, data, error, refetch } = useGetAllCheckIns()
     const { checkIns, hasCheckIns } = useTransformCheckIns(data)
