@@ -1,63 +1,13 @@
-# Features
-
-## Check Ins
-
-- Toggle check in display
-- Show check ins in calendar
-
-## Settings
-
-- Toggle check in display(MMMM DD YYYY, MMMM DD, DD, etc.)
-
-## PR Log
-
-- Exercise list
-- Add PR
-- Edit PR
-- Delete PR
-- Search PRs?
-
-## Achievements
-
-- TODO
-
-## Goal Tracker
-
-- TODO
-
-## Workout Timer
-
-- TODO
-
-## Dashboard
-
-- TODO
+## Tech
 
 ## Misc
 
 - Tests
-- non white background color
 - Add one rep max tool
 - Add barbell load calculator
-- Goal Tracker
 - use antfu/eslint-config for FE
 - Add ActionBar for mobile
-- Better error UI
-
-## Profile Setup / Onboarding
-
-- Set check ins per week goal
-- Each week this is completed counts towards some achievement
-- On initial login show prompt for user to select number of check ins each week they want to hit
-- If user skips initial goal setting, show alert on profile page icon until goal is set?
-- This can be changed on their profile page
-- Week starts on Monday
-- On each check in, check if the goal has been met
-
-profile_settings (id, user_id, start_date, checkins_per_week) table?
-
-Should always start following monday from when setting is set
-Shouldn't be able to set goal to more than days left in the week
+- Better error component UI
 
 # React + TypeScript + Vite
 

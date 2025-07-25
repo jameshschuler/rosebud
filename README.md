@@ -1,3 +1,7 @@
 # Swol
 
-### Exercise activity check in tracker
+## About
+
+### Features
+
+## [ER Diagram](https://app.eraser.io/workspace/bPc9p42ZPUv9R0Nzf5Xp?origin=share)
