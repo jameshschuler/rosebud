@@ -1,6 +1,7 @@
 import { Activity, CheckIn } from '@/types/checkIns';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import { useIsMobile } from './useIsMobile';
 
 const monthOrder = [
   "January", "February", "March", "April", "May", "June",
@@ -10,7 +11,11 @@ const monthOrder = [
 export function useTransformCheckIns(
   data?: CheckIn[]
 ) {
+  const isMobile = useIsMobile()
+
   const checkIns = useMemo(() => {
+    const format = isMobile ? 'DD' : 'MM-DD-YYYY'
+
     const groupedCheckInsByYear = new Map<
       string,
       Map<string, Map<string, { id: number, activity: Activity }[]>>
@@ -33,15 +38,15 @@ export function useTransformCheckIns(
       const monthCheckIns = yearMap?.get(month)
       if (!monthCheckIns) {
         yearMap?.set(month, new Map([
-          [dayjs(d.checkInDate).format('MM-DD-YYYY'), [{ id: d.id, activity: d.activity }]],
+          [dayjs(d.checkInDate).format(format), [{ id: d.id, activity: d.activity }]],
         ]))
       }
       else {
-        const existingDate = monthCheckIns.get(dayjs(d.checkInDate).format('MM-DD-YYYY'))
+        const existingDate = monthCheckIns.get(dayjs(d.checkInDate).format(format))
         if (existingDate) {
           existingDate.push({ id: d.id, activity: d.activity })
         } else {
-          monthCheckIns.set(dayjs(d.checkInDate).format('MM-DD-YYYY'), [{ id: d.id, activity: d.activity }])
+          monthCheckIns.set(dayjs(d.checkInDate).format(format), [{ id: d.id, activity: d.activity }])
         }
       }
     })
@@ -60,8 +65,8 @@ export function useTransformCheckIns(
           const dateStringA = a[0];
           const dateStringB = b[0];
 
-          const dateA = dayjs(dateStringA, 'MM-DD-YYYY');
-          const dateB = dayjs(dateStringB, 'MM-DD-YYYY');
+          const dateA = dayjs(dateStringA, format);
+          const dateB = dayjs(dateStringB, format);
 
           return dateB.valueOf() - dateA.valueOf();
         });

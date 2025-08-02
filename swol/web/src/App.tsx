@@ -1,7 +1,6 @@
 import { Box, Container } from '@mantine/core'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
-import { useMediaQuery } from '@mantine/hooks'
 import '@mantine/notifications/styles.css'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
@@ -12,13 +11,14 @@ import { Login } from './components/Login'
 import {
   useAuth
 } from './hooks'
+import { useIsMobile } from './hooks/useIsMobile'
 
 dayjs.extend(utc)
 dayjs.extend(customParseFormat)
 
 function App() {
   const { auth, user } = useAuth()
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useIsMobile()
 
   if (!auth || !user) {
     return <Login />

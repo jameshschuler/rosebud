@@ -1,14 +1,5 @@
 ## Tech
 
-## Misc
-
-- Tests
-- Add one rep max tool
-- Add barbell load calculator
-- use antfu/eslint-config for FE
-- Add ActionBar for mobile
-- Better error component UI
-
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
