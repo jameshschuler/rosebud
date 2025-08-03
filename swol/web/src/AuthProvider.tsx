@@ -14,9 +14,9 @@ async function signOut() {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [auth, setAuth] = useState(false)
+  const [auth, setAuth] = useState<boolean>(false)
   const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState<boolean | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     setLoading(true)
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ auth, session, user, signIn, signOut }}>
+    <AuthContext.Provider value={{ isAuthenticated: auth, session, user, signIn, signOut }}>
       {!loading && children}
     </AuthContext.Provider>
   )

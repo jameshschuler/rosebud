@@ -1,7 +1,7 @@
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { Activity, CheckIn } from '@/types/checkIns';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import { useIsMobile } from './useIsMobile';
 
 const monthOrder = [
   "January", "February", "March", "April", "May", "June",

@@ -8,7 +8,7 @@ import swol from '../assets/SWOLa192.png'
 import { useAuth } from '../hooks'
 
 export function AppBar() {
-  const { auth, user, signOut } = useAuth()
+  const { isAuthenticated, user, signOut } = useAuth()
 
   const initials = (user?.user_metadata?.full_name ?? '')
     .split(' ')
@@ -22,7 +22,7 @@ export function AppBar() {
         <Title>Swol</Title>
       </Flex>
 
-      {auth && user && (
+      {isAuthenticated && user && (
         <Box>
           <Menu shadow="md" width={200}>
             <Menu.Target>
@@ -40,7 +40,9 @@ export function AppBar() {
               <Menu.Divider />
               <Menu.Item
                 p={12}
-                onClick={() => signOut()}
+                onClick={() => {
+                  signOut()
+                }}
                 leftSection={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
               >
                 Sign out

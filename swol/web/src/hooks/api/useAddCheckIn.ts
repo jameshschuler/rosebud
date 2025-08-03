@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Client, useGetHonoClient } from "../useGetHonoClient"
+import { useNotifications } from "../useNotifications"
 import { CHECKINS_QUERY_KEY } from "./useGetCheckIns"
 
 export interface AddCheckInRequest {
@@ -23,9 +24,13 @@ export const addCheckIn = async (client: Client, payload: AddCheckInRequest) => 
     }
 }
 
+
+// TODO: use onError callback to show error notification
 export function useAddCheckIn() {
     const { client } = useGetHonoClient()
     const queryClient = useQueryClient()
+
+    const { success, error } = useNotifications()
 
     return useMutation({
         onSuccess: () => {

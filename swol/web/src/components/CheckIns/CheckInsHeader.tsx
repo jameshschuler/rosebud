@@ -11,7 +11,7 @@ interface CheckInsHeaderProps {
 export function CheckInsHeader({ onAddCheckIn, hasCheckIns }: CheckInsHeaderProps) {
 
     return (
-        <Flex justify="space-between" align="center" mt="xl">
+        <Flex justify="space-between" align="center">
             <Title>Your Check Ins</Title>
             <Flex gap={8} align="center">
                 {/* {selectedCheckIn && (
