@@ -1,9 +1,10 @@
 import { AppBar } from "@/components/AppBar"
 import { useIsMobile } from "@/hooks/useIsMobile"
+import { useIsTablet } from "@/hooks/useIsTablet"
 import { faHome } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Box, Flex, NavLink, Stack } from "@mantine/core"
-import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router"
+import { ActionIcon, Box, Flex, NavLink, Stack, VisuallyHidden } from "@mantine/core"
+import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router"
 
 export const Route = createFileRoute('/_auth')({
     beforeLoad: ({ context }) => {
@@ -18,23 +19,29 @@ export const Route = createFileRoute('/_auth')({
 
 function AuthLayout() {
     const isMobile = useIsMobile()
+    const isTablet = useIsTablet()
+
+    const location = useLocation();
+    const isActive = (path: string) => location.pathname === path;
 
     return (
-        <Box>
+        <Box mih={'100vh'} style={{ outline: '1px solid black' }}>
             <AppBar />
-            <Flex>
-                <Stack component={'nav'} w="25%" gap={16} px={24} display={isMobile ? 'none' : 'flex'}>
+            <Flex flex={1}>
+                <Stack component={'nav'} w="25%" gap={16} px={24} display={isMobile || isTablet ? 'none' : 'flex'}>
                     <NavLink
                         label="Dashboard"
                         component={Link}
                         to="/dashboard"
-                        leftSection={<FontAwesomeIcon icon={faHome} />}
+                        leftSection={<FontAwesomeIcon icon={faHome} color={isActive('/dashboard') ? 'green' : 'gray'} />}
+                        color={isActive('/dashboard') ? 'green' : 'gray'}
                     />
                     <NavLink
                         label="Check Ins"
                         component={Link}
                         to="/checkIns"
-                        leftSection={<FontAwesomeIcon icon={faHome} />}
+                        leftSection={<FontAwesomeIcon icon={faHome} color={isActive('/checkIns') ? 'green' : 'gray'} />}
+                        color={isActive('/checkIns') ? 'green' : 'gray'}
                     />
                     <NavLink
                         label="Milestones"
@@ -59,6 +66,16 @@ function AuthLayout() {
                     <Outlet />
                 </Box>
             </Flex>
+            <Box w='100%' pos='fixed' bottom={0} left={0} p={16} bg={'white'}>
+                <ActionIcon variant="transparent" aria-label="Dashboard" size={48} component={Link} to="/dashboard" color={isActive('/dashboard') ? 'green' : 'gray'}>
+                    <FontAwesomeIcon icon={faHome} size="2xl" />
+                    <VisuallyHidden>Dashboard</VisuallyHidden>
+                </ActionIcon>
+                <ActionIcon variant="transparent" aria-label="Check Ins" size={48} component={Link} to="/checkIns" color={isActive('/checkIns') ? 'green' : 'gray'}>
+                    <FontAwesomeIcon icon={faHome} size="2xl" />
+                    <VisuallyHidden>Check Ins</VisuallyHidden>
+                </ActionIcon>
+            </Box>
         </Box>
     )
 }
