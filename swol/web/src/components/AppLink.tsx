@@ -27,7 +27,7 @@ export function AppLink({ to, label, icon }: AppLinkProps) {
             styles={{
                 label: {
                     fontSize: isActive ? 20 : 16,
-                    fontWeight: isActive ? 500 : 400,
+                    fontWeight: isActive ? 600 : 500,
                     color: isActive ? SWOL_GREEN : 'gray',
                 }
             }}

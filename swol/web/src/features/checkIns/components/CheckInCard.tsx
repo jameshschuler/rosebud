@@ -1,4 +1,5 @@
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { SWOL_GREEN } from "@/theme";
 import { Badge, Button } from "@mantine/core";
 
 interface CheckInCardProps {
@@ -20,9 +21,10 @@ export function CheckInCard({ checkInDate, onClick, activityCount }: CheckInCard
             key={checkInDate}
             variant="outline"
             color="black"
+            bg='white'
             radius="md"
             leftSection={
-                <Badge size="xs" color="blue">{activityCount}</Badge>
+                <Badge size="xs" color={SWOL_GREEN}>{activityCount}</Badge>
             }
         >
             {checkInDate}

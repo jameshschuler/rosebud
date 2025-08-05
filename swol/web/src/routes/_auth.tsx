@@ -26,14 +26,14 @@ function AuthLayout() {
         <Box mih={'100vh'}>
             <AppBar />
             <Flex mb={100} flex={1}>
-                <Stack component={'nav'} w="25%" gap={16} px={24} display={isMobile || isTablet ? 'none' : 'flex'}>
+                <Stack component={'nav'} w="20%" gap={16} px={24} display={isMobile || isTablet ? 'none' : 'flex'}>
                     <AppLink icon={faHome} to='/dashboard' label='Dashboard' />
                     <AppLink icon={faHome} to='/checkIns' label='Check Ins' />
                     <AppLink icon={faHome} to='/milestones' label='Milestones' />
                     <AppLink icon={faHome} to='/goals' label='Goals' />
                     <AppLink icon={faHome} to='/achievements' label='Achievements' />
                 </Stack>
-                <Box w={isMobile ? '100%' : '75%'} px={24}>
+                <Box w={isMobile ? '100%' : '80%'} p={24} bg='gray.0' bdrs={16}>
                     <Outlet />
                 </Box>
             </Flex>

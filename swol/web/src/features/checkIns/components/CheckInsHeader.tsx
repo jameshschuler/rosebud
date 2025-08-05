@@ -1,3 +1,4 @@
+import { SWOL_GREEN } from "@/theme";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Flex, Title } from "@mantine/core";
@@ -19,6 +20,7 @@ export function CheckInsHeader({ onAddCheckIn, hasCheckIns }: CheckInsHeaderProp
                         icon={<FontAwesomeIcon icon={faPlus} size="lg" />}
                         onClick={onAddCheckIn}
                         label="New Check In"
+                        color={SWOL_GREEN}
                     />
                 )}
             </Flex>

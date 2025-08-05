@@ -1,5 +1,6 @@
 import { useAuth, useNotifications } from "@/hooks"
 import { useIsMobile } from "@/hooks/useIsMobile"
+import { SWOL_GREEN } from "@/theme"
 import { Button, Checkbox, Flex, Group, Text, Textarea } from "@mantine/core"
 import { DatePicker } from "@mantine/dates"
 import { useForm } from "@mantine/form"
@@ -107,7 +108,7 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
             <Group justify="flex-end">
                 <Button
                     type="submit"
-                    color="green"
+                    color={SWOL_GREEN}
                     radius="md"
                     disabled={isPending}
                     loading={isPending}
