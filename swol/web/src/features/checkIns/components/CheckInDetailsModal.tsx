@@ -1,11 +1,11 @@
-import { Activity } from '@/types/checkIns'
+import { Activity } from '@/features/CheckIns/types/checkIns'
 import { faDumbbell, faRunning, faTrashAlt, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Badge, Button, Divider, Flex, Modal, Text, ThemeIcon, Tooltip } from '@mantine/core'
 import { useState } from 'react'
-import { useAuth, useModal } from '../../hooks'
-import { useRemoveCheckIn } from '../../hooks/api/useRemoveCheckIn'
-import { useNotifications } from '../../hooks/useNotifications'
+import { useAuth, useModal } from '../../../hooks'
+import { useNotifications } from '../../../hooks/useNotifications'
+import { useRemoveCheckIn } from '../hooks/useRemoveCheckIn'
 import { ConfirmModal } from './ConfirmModal'
 
 const iconMap: Record<number, IconDefinition> = {

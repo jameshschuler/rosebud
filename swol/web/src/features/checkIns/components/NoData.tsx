@@ -1,7 +1,7 @@
 import { Button, Flex, Image, Text } from '@mantine/core'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
-import noDataYet from '../../assets/energizer.svg'
+import noDataYet from '../../../assets/energizer.svg'
 
 interface NoDataProps {
   onAction: () => void

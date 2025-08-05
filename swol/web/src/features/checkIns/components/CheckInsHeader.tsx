@@ -1,7 +1,7 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Flex, Title } from "@mantine/core";
-import { ResponsiveButton } from "../ui/ResponsiveButton";
+import { ResponsiveButton } from "../../../components/ui/ResponsiveButton";
 
 interface CheckInsHeaderProps {
     hasCheckIns: boolean;

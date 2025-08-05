@@ -1,9 +1,9 @@
+import { Client, useGetHonoClient } from '@/hooks/useGetHonoClient';
 import {
     useMutation,
     useQueryClient,
-} from '@tanstack/react-query'
-import { Client, useGetHonoClient } from "../useGetHonoClient"
-import { CHECKINS_QUERY_KEY } from "./useGetCheckIns"
+} from '@tanstack/react-query';
+import { CHECKINS_QUERY_KEY } from './useGetCheckIns';
 
 export interface RemoveCheckInRequest {
     checkInIds: number[]

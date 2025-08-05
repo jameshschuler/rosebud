@@ -1,6 +1,6 @@
+import { Client, useGetHonoClient } from "@/hooks/useGetHonoClient"
+import { useNotifications } from "@mantine/notifications"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Client, useGetHonoClient } from "../useGetHonoClient"
-import { useNotifications } from "../useNotifications"
 import { CHECKINS_QUERY_KEY } from "./useGetCheckIns"
 
 export interface AddCheckInRequest {

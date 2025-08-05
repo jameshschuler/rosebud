@@ -1,6 +1,5 @@
+import { Client, useGetHonoClient } from '@/hooks/useGetHonoClient'
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import type { Client } from '../useGetHonoClient'
-import { useGetHonoClient } from '../useGetHonoClient'
 
 export const CHECKINS_QUERY_KEY = ['check-ins']
 

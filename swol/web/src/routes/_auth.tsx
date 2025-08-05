@@ -25,9 +25,9 @@ function AuthLayout() {
     const isActive = (path: string) => location.pathname === path;
 
     return (
-        <Box mih={'100vh'} style={{ outline: '1px solid black' }}>
+        <Box mih={'100vh'}>
             <AppBar />
-            <Flex flex={1}>
+            <Flex mb={100} flex={1}>
                 <Stack component={'nav'} w="25%" gap={16} px={24} display={isMobile || isTablet ? 'none' : 'flex'}>
                     <NavLink
                         label="Dashboard"
@@ -66,7 +66,7 @@ function AuthLayout() {
                     <Outlet />
                 </Box>
             </Flex>
-            <Box w='100%' pos='fixed' bottom={0} left={0} p={16} bg={'white'}>
+            <Flex justify='space-between' w='100%' pos='fixed' bottom={0} left={0} p={16} bg={'white'}>
                 <ActionIcon variant="transparent" aria-label="Dashboard" size={48} component={Link} to="/dashboard" color={isActive('/dashboard') ? 'green' : 'gray'}>
                     <FontAwesomeIcon icon={faHome} size="2xl" />
                     <VisuallyHidden>Dashboard</VisuallyHidden>
@@ -75,7 +75,19 @@ function AuthLayout() {
                     <FontAwesomeIcon icon={faHome} size="2xl" />
                     <VisuallyHidden>Check Ins</VisuallyHidden>
                 </ActionIcon>
-            </Box>
+                <ActionIcon variant="transparent" aria-label="Milestones" size={48} component={Link} to="/milestones" color={isActive('/milestones') ? 'green' : 'gray'}>
+                    <FontAwesomeIcon icon={faHome} size="2xl" />
+                    <VisuallyHidden>Milestones</VisuallyHidden>
+                </ActionIcon>
+                <ActionIcon variant="transparent" aria-label="Goals" size={48} component={Link} to="/goals" color={isActive('/goals') ? 'green' : 'gray'}>
+                    <FontAwesomeIcon icon={faHome} size="2xl" />
+                    <VisuallyHidden>Goals</VisuallyHidden>
+                </ActionIcon>
+                <ActionIcon variant="transparent" aria-label="Achievements" size={48} component={Link} to="/achievements" color={isActive('/achievements') ? 'green' : 'gray'}>
+                    <FontAwesomeIcon icon={faHome} size="2xl" />
+                    <VisuallyHidden>Achievements</VisuallyHidden>
+                </ActionIcon>
+            </Flex>
         </Box>
     )
 }

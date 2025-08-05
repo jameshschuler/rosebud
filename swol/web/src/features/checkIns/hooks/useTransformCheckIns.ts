@@ -1,5 +1,5 @@
+import { Activity, CheckIn } from '@/features/CheckIns/types/checkIns';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { Activity, CheckIn } from '@/types/checkIns';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 

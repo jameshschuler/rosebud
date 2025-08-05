@@ -1,5 +1,5 @@
+import { Activity, CheckInDisplayItem } from '@/features/CheckIns/types/checkIns';
 import { useModal } from '@/hooks';
-import { Activity, CheckInDisplayItem } from '@/types/checkIns';
 import { Box, Divider, Flex, Title } from '@mantine/core';
 import { useState } from 'react';
 import { CheckInCard } from './CheckInCard';
