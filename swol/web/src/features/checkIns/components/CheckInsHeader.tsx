@@ -14,14 +14,6 @@ export function CheckInsHeader({ onAddCheckIn, hasCheckIns }: CheckInsHeaderProp
         <Flex justify="space-between" align="center">
             <Title>Your Check Ins</Title>
             <Flex gap={8} align="center">
-                {/* {selectedCheckIn && (
-                   <ResponsiveButton
-                     color="red"
-                     icon={<FontAwesomeIcon icon={faTrashCan} size="lg" />}
-                     onClick={removeModal.open}
-                     label="Remove Check In"
-                   />
-                 )} */}
                 {hasCheckIns && (
                     <ResponsiveButton
                         icon={<FontAwesomeIcon icon={faPlus} size="lg" />}

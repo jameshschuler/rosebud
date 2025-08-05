@@ -16,7 +16,7 @@ export function CheckInCard({ checkInDate, onClick, activityCount }: CheckInCard
                 boxShadow: `4px 4px 0px black`,
             }}
             onClick={onClick}
-            w={isMobile ? 75 : 160}
+            w={isMobile ? 85 : 160}
             key={checkInDate}
             variant="outline"
             color="black"

@@ -1,4 +1,4 @@
-import { createTheme, MantineProvider } from '@mantine/core'
+import { MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
 import { Notifications } from '@mantine/notifications'
@@ -14,6 +14,7 @@ import { registerSW } from 'virtual:pwa-register'
 import { AuthProvider } from './AuthProvider.tsx'
 import { useAuth } from './hooks/index.ts'
 import { routeTree } from './routeTree.gen'
+import { theme } from './theme.ts'
 
 dayjs.extend(utc)
 dayjs.extend(customParseFormat)
@@ -48,10 +49,6 @@ declare module '@tanstack/react-router' {
 if ('serviceWorker' in navigator) {
   registerSW();
 }
-
-const theme = createTheme({
-  fontFamily: 'Poppins, serif',
-})
 
 function InnerApp() {
   const auth = useAuth()
