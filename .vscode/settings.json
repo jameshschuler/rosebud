@@ -5,7 +5,6 @@
   "editor.defaultFormatter": null,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always",
-    "source.organizeImports": "always",
   },
   "eslint.format.enable": true,
   "eslint.useFlatConfig": true,
