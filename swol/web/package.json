@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "generate-routes": "tsr generate",
     "dev": "bunx --bun vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -35,6 +36,7 @@
     "@antfu/eslint-config": "^4.13.2",
     "@eslint-react/eslint-plugin": "^1.49.0",
     "@eslint/js": "^9.11.1",
+    "@tanstack/router-cli": "^1.130.15",
     "@tanstack/router-plugin": "^1.130.15",
     "@types/bun": "^1.2.11",
     "@types/react": "19.1.9",
