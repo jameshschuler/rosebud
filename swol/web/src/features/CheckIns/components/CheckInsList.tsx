@@ -1,9 +1,9 @@
-import { Activity, CheckInDisplayItem } from '@/features/tempCheckIns/types/checkIns';
-import { useModal } from '@/hooks';
-import { Box, Divider, Flex, Title } from '@mantine/core';
-import { useState } from 'react';
-import { CheckInCard } from './CheckInCard';
-import { CheckInDetailsModal } from './CheckInDetailsModal';
+import type { Activity, CheckInDisplayItem } from '@/features/CheckIns/types/checkIns'
+import { Box, Divider, Flex, Title } from '@mantine/core'
+import { useState } from 'react'
+import { useModal } from '@/hooks'
+import { CheckInCard } from './CheckInCard'
+import { CheckInDetailsModal } from './CheckInDetailsModal'
 
 interface CheckInsListProps {
   checkIns: CheckInDisplayItem
@@ -27,13 +27,18 @@ export function CheckInsList({ checkIns }: CheckInsListProps) {
                   </Title>
                   <Flex gap={16} wrap="wrap" mt="md">
                     {[...data].map(([checkInDate, details]) => (
-                      <CheckInCard key={checkInDate} activityCount={details.length} checkInDate={checkInDate} onClick={() => {
-                        setSelectedCheckIns({
-                          checkInDate,
-                          details
-                        })
-                        detailsModal.open()
-                      }} />
+                      <CheckInCard
+                        key={checkInDate}
+                        activityCount={details.length}
+                        checkInDate={checkInDate}
+                        onClick={() => {
+                          setSelectedCheckIns({
+                            checkInDate,
+                            details,
+                          })
+                          detailsModal.open()
+                        }}
+                      />
                     ))}
                   </Flex>
                 </Box>

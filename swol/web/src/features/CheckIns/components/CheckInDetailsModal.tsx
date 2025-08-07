@@ -1,5 +1,6 @@
-import { Activity } from '@/features/tempCheckIns/types/checkIns'
-import { faDumbbell, faRunning, faTrashAlt, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import type { IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import type { Activity } from '@/features/CheckIns/types/checkIns'
+import { faDumbbell, faRunning, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Badge, Button, Divider, Flex, Modal, Text, ThemeIcon, Tooltip } from '@mantine/core'
 import { useState } from 'react'
@@ -40,7 +41,7 @@ export function CheckInDetailsModal({
       }
 
       await removeCheckIn({
-        checkInIds: Array.from(selectedActivities)
+        checkInIds: Array.from(selectedActivities),
       })
 
       success({
@@ -55,7 +56,8 @@ export function CheckInDetailsModal({
         message:
           'Unable to remove check in. Please try again in a moment.',
       })
-    } finally {
+    }
+    finally {
       setSelectedActivities(new Set())
     }
   }
@@ -69,7 +71,8 @@ export function CheckInDetailsModal({
     const newSelection = new Set(selectedActivities)
     if (newSelection.has(checkInId)) {
       newSelection.delete(checkInId)
-    } else {
+    }
+    else {
       newSelection.add(checkInId)
     }
 
@@ -78,10 +81,14 @@ export function CheckInDetailsModal({
 
   return (
     <>
-      <Modal.Root opened={opened} onClose={() => {
-        setSelectedActivities(new Set())
-        close()
-      }} size="lg">
+      <Modal.Root
+        opened={opened}
+        onClose={() => {
+          setSelectedActivities(new Set())
+          close()
+        }}
+        size="lg"
+      >
         <Modal.Overlay />
         <Modal.Content>
           <Modal.Header>
@@ -96,19 +103,19 @@ export function CheckInDetailsModal({
             <Text size="md" fw={500}>
               Activities
             </Text>
-            <Flex gap={'xs'} mt={'xs'}>
+            <Flex gap="xs" mt="xs">
               {selectedCheckIns?.details.map((detail) => {
                 return (
                   <Tooltip key={detail.id} label={detail.activity.name}>
-                    <ThemeIcon variant="outline" color={selectedActivities?.has(detail.id) ? 'red' : 'blue'} size='lg' p='md' style={{ cursor: 'pointer' }} onClick={() => toggleCheckInSelection(detail.id)}>
-                      <FontAwesomeIcon icon={iconMap[detail.activity.id]} size='lg' />
+                    <ThemeIcon variant="outline" color={selectedActivities?.has(detail.id) ? 'red' : 'blue'} size="lg" p="md" style={{ cursor: 'pointer' }} onClick={() => toggleCheckInSelection(detail.id)}>
+                      <FontAwesomeIcon icon={iconMap[detail.activity.id]} size="lg" />
                     </ThemeIcon>
                   </Tooltip>
                 )
               })}
             </Flex>
-            <Divider my='lg' />
-            <Flex align={'center'} justify='center'>
+            <Divider my="lg" />
+            <Flex align="center" justify="center">
               {selectedActivities?.size !== 0 && (
                 <Button
                   onClick={handleRemoveCheckIn}
@@ -126,7 +133,7 @@ export function CheckInDetailsModal({
             </Flex>
           </Modal.Body>
         </Modal.Content>
-      </Modal.Root >
+      </Modal.Root>
       <ConfirmModal opened={confirmModal.opened} close={confirmModal.close} onConfirm={handleRemoveCheckIn} isPending={isPending} />
     </>
   )

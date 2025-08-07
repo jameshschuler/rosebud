@@ -1,6 +1,6 @@
 import { Box } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { useGetAllCheckIns } from '@/features/tempCheckIns/hooks/useGetCheckIns'
+import { useGetAllCheckIns } from '@/features/CheckIns/hooks/useGetCheckIns'
 import { useTransformCheckIns } from '../hooks/useTransformCheckIns'
 import { CheckInsHeader } from './CheckInsHeader'
 import { CheckInsList } from './CheckInsList'

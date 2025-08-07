@@ -1,15 +1,25 @@
-import { Activity, CheckIn } from '@/features/tempCheckIns/types/checkIns';
-import { useIsMobile } from '@/hooks/useIsMobile';
-import dayjs from 'dayjs';
-import { useMemo } from 'react';
+import type { Activity, CheckIn } from '@/features/CheckIns/types/checkIns'
+import dayjs from 'dayjs'
+import { useMemo } from 'react'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 const monthOrder = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
 
 export function useTransformCheckIns(
-  data?: CheckIn[]
+  data?: CheckIn[],
 ) {
   const isMobile = useIsMobile()
 
@@ -45,44 +55,45 @@ export function useTransformCheckIns(
         const existingDate = monthCheckIns.get(dayjs(d.checkInDate).format(format))
         if (existingDate) {
           existingDate.push({ id: d.id, activity: d.activity })
-        } else {
+        }
+        else {
           monthCheckIns.set(dayjs(d.checkInDate).format(format), [{ id: d.id, activity: d.activity }])
         }
       }
     })
 
     const sortedYearEntries = new Map([...groupedCheckInsByYear.entries()].sort((a, b) => {
-      const yearA = a[0];
-      const yearB = b[0];
+      const yearA = a[0]
+      const yearB = b[0]
 
-      return parseInt(yearB) - parseInt(yearA);
-    }));
+      return Number.parseInt(yearB) - Number.parseInt(yearA)
+    }))
 
     // Iterate over each year's map and sort its months and dates
     sortedYearEntries.forEach((yearMap, year) => {
       yearMap.forEach((monthMap, month) => {
         const sortedDateEntries = [...monthMap.entries()].sort((a, b) => {
-          const dateStringA = a[0];
-          const dateStringB = b[0];
+          const dateStringA = a[0]
+          const dateStringB = b[0]
 
-          const dateA = dayjs(dateStringA, format);
-          const dateB = dayjs(dateStringB, format);
+          const dateA = dayjs(dateStringA, format)
+          const dateB = dayjs(dateStringB, format)
 
-          return dateB.valueOf() - dateA.valueOf();
-        });
+          return dateB.valueOf() - dateA.valueOf()
+        })
 
-        yearMap.set(month, new Map(sortedDateEntries));
-      });
+        yearMap.set(month, new Map(sortedDateEntries))
+      })
 
       const sortedMonthEntries = [...yearMap.entries()].sort((a, b) => {
-        const monthA = a[0];
-        const monthB = b[0];
+        const monthA = a[0]
+        const monthB = b[0]
 
-        return monthOrder.indexOf(monthB) - monthOrder.indexOf(monthA);
-      });
+        return monthOrder.indexOf(monthB) - monthOrder.indexOf(monthA)
+      })
 
-      sortedYearEntries.set(year, new Map(sortedMonthEntries));
-    });
+      sortedYearEntries.set(year, new Map(sortedMonthEntries))
+    })
 
     return sortedYearEntries
   }, [data])
