@@ -4,11 +4,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Avatar, Box, Button, Flex, Image, Menu, Title } from '@mantine/core'
+import { useNavigate } from '@tanstack/react-router'
 import swol from '../assets/SWOLa192.png'
 import { useAuth } from '../hooks'
 
 export function AppBar() {
   const { isAuthenticated, user, signOut } = useAuth()
+  const navigate = useNavigate()
 
   const initials = (user?.user_metadata?.full_name ?? '')
     .split(' ')
@@ -18,7 +20,7 @@ export function AppBar() {
   return (
     <Flex justify="space-between" align="center" p={{ base: 'md', 'xs': 'xl' }}>
       <Flex align="center" gap={16}>
-        <Image src={swol} h={50} />
+        <Image src={swol} h={50} w={50} />
         <Title>Swol</Title>
       </Flex>
 
@@ -40,8 +42,9 @@ export function AppBar() {
               <Menu.Divider />
               <Menu.Item
                 p={12}
-                onClick={() => {
-                  signOut()
+                onClick={async () => {
+                  await signOut()
+                  navigate({ to: '/' })
                 }}
                 leftSection={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
               >

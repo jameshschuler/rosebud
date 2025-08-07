@@ -6,7 +6,7 @@ export interface AuthContext {
   session: Session | null,
   user: User | null,
   signIn: (provider: 'github' | 'google') => {},
-  signOut: () => {},
+  signOut(): Promise<void>,
 }
 
 export const AuthContext = createContext<AuthContext | null>(null)
