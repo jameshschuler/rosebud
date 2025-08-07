@@ -1,4 +1,4 @@
-import { Activity, CheckIn } from '@/features/CheckIns/types/checkIns';
+import { Activity, CheckIn } from '@/features/tempCheckIns/types/checkIns';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
