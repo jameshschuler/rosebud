@@ -15,7 +15,7 @@ export function Toolbar() {
       pos="fixed"
       bottom={0}
       left={0}
-      py={8}
+      py={4}
       px={12}
       bg="white"
       style={{

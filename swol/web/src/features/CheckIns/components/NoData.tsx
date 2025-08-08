@@ -1,6 +1,5 @@
 import { Button, Flex, Image, Text } from '@mantine/core'
-import '@mantine/core/styles.css'
-import '@mantine/dates/styles.css'
+import { SWOL_GREEN } from '@/theme'
 import noDataYet from '../../../assets/energizer.svg'
 
 interface NoDataProps {
@@ -14,7 +13,7 @@ export function NoData({ onAction }: NoDataProps) {
       <Text size="lg" fw={600}>
         Looks like you haven't checked into the gym yet.
       </Text>
-      <Button variant="filled" color="yellow" size="lg" onClick={onAction}>
+      <Button variant="filled" color={SWOL_GREEN} size="lg" onClick={onAction}>
         Check In Now
       </Button>
     </Flex>

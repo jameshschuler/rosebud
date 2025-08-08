@@ -21,7 +21,13 @@ export function CreateEditDrawer({ opened, close }: CreateEditDrawerProps) {
       size={isPhablet ? '95%' : 'lg'}
     >
       <Drawer.Overlay />
-      <Drawer.Content>
+      <Drawer.Content style={isPhablet
+        ? {
+            borderTopRightRadius: '16px',
+            borderTopLeftRadius: '16px',
+          }
+        : {}}
+      >
         <Drawer.Header>
           <Drawer.Title>
             <Text size="xl" fw={600}>
@@ -31,7 +37,7 @@ export function CreateEditDrawer({ opened, close }: CreateEditDrawerProps) {
           <Drawer.CloseButton icon={<FontAwesomeIcon icon={faCircleXmark} size="xl" />} />
         </Drawer.Header>
         <Divider mb="md" mx="md" />
-        <Drawer.Body px={24}>
+        <Drawer.Body px={24} pb={16}>
           <CreateEditForm close={close} />
         </Drawer.Body>
       </Drawer.Content>
