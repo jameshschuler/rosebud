@@ -3,12 +3,12 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ActionIcon, Avatar, Box, Button, Flex, Image, Menu, Title, VisuallyHidden } from '@mantine/core'
+import { Avatar, Box, Button, Flex, Image, Menu, Title } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from '@tanstack/react-router'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import swol from '../assets/SWOLa192.png'
-import { useAuth, useIsMobile, useIsPhablet, useIsTablet } from '../hooks'
+import { useAuth, useIsPhablet } from '../hooks'
 import { AccountDrawer } from './AccountDrawer'
 
 export function AppBar() {
@@ -17,6 +17,11 @@ export function AppBar() {
 
   const [opened, { open, close }] = useDisclosure(false)
   const isPhablet = useIsPhablet()
+
+  const handleSignOut = useCallback(async () => {
+    await signOut()
+    navigate({ to: '/' })
+  }, [navigate, signOut])
 
   const initials = (user?.user_metadata?.full_name ?? '')
     .split(' ')
@@ -61,10 +66,7 @@ export function AppBar() {
                       <Menu.Divider />
                       <Menu.Item
                         p={12}
-                        onClick={async () => {
-                          await signOut()
-                          navigate({ to: '/' })
-                        }}
+                        onClick={handleSignOut}
                         leftSection={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
                       >
                         Sign out
@@ -72,11 +74,10 @@ export function AppBar() {
                     </Menu.Dropdown>
                   </Menu>
                 )}
-
           </Box>
         )}
       </Flex>
-      <AccountDrawer username={username} opened={opened} close={close} />
+      <AccountDrawer username={username} onSignOut={handleSignOut} opened={opened} close={close} />
     </>
   )
 }

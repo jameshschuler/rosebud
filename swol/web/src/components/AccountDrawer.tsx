@@ -17,9 +17,10 @@ interface AccountDrawerProps {
   opened: boolean
   close: () => void
   username: string
+  onSignOut: () => Promise<void>
 }
 
-export function AccountDrawer({ opened, close, username }: AccountDrawerProps) {
+export function AccountDrawer({ opened, close, username, onSignOut }: AccountDrawerProps) {
   const isMobile = useIsMobile()
 
   return (
@@ -45,7 +46,7 @@ export function AccountDrawer({ opened, close, username }: AccountDrawerProps) {
                 <AppLink key={link.to} icon={link.icon} to={link.to} label={link.label} />
               ))}
             </Stack>
-            <Box>
+            <Box mb={12}>
               <Divider mb="xs" />
               <Button
                 px={12}
@@ -57,6 +58,7 @@ export function AccountDrawer({ opened, close, username }: AccountDrawerProps) {
                 )}
                 color="red"
                 size="lg"
+                onClick={onSignOut}
               >
                 Sign out
               </Button>
@@ -64,7 +66,6 @@ export function AccountDrawer({ opened, close, username }: AccountDrawerProps) {
           </Flex>
 
         </Drawer.Body>
-
       </Drawer.Content>
     </Drawer.Root>
   )

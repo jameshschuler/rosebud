@@ -11,12 +11,12 @@ export function Toolbar() {
 
   return (
     <Flex
-      justify="space-between"
       w="100%"
       pos="fixed"
       bottom={0}
       left={0}
-      p={16}
+      py={8}
+      px={12}
       bg="white"
       style={{
         boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)',
@@ -24,8 +24,8 @@ export function Toolbar() {
     >
       {navLinks.map((link) => {
         return (
-          <ActionIcon key={link.to} variant="transparent" aria-label={link.label} size={48} component={Link} to={link.to} color={isActive(link.to) ? SWOL_GREEN : 'gray'}>
-            <FontAwesomeIcon icon={link.icon} size="2xl" />
+          <ActionIcon flex={1} key={link.to} variant="transparent" aria-label={link.label} size={48} component={Link} to={link.to} color={isActive(link.to) ? SWOL_GREEN : 'gray'}>
+            <FontAwesomeIcon icon={link.icon} size="xl" />
             <VisuallyHidden>{link.label}</VisuallyHidden>
           </ActionIcon>
         )

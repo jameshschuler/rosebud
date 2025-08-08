@@ -63,7 +63,7 @@ function App() {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <Notifications />
+        <Notifications position="top-center" />
         <InnerApp />
       </QueryClientProvider>
     </AuthProvider>

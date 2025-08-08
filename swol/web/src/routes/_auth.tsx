@@ -29,7 +29,7 @@ function AuthLayout() {
             <AppLink key={link.to} icon={link.icon} to={link.to} label={link.label} />
           ))}
         </Stack>
-        <Box w={isPhablet ? '95%' : '80%'} mx={isPhablet ? 'auto' : ''} p={24} bg="gray.0" bdrs={16}>
+        <Box w={isPhablet ? '95%' : '80%'} mx={isPhablet ? 'auto' : ''} mt={isPhablet ? 32 : 0} p={24} bg="gray.0" bdrs={16}>
           <Outlet />
         </Box>
       </Flex>

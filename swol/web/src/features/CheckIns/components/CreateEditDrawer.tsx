@@ -1,7 +1,7 @@
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Divider, Drawer, Text } from '@mantine/core'
-import { useIsMobile } from '@/hooks/useIsMobile'
+import { useIsPhablet } from '@/hooks'
 import { CreateEditForm } from './CreateEditForm'
 
 interface CreateEditDrawerProps {
@@ -10,10 +10,16 @@ interface CreateEditDrawerProps {
 }
 
 export function CreateEditDrawer({ opened, close }: CreateEditDrawerProps) {
-  const isMobile = useIsMobile()
+  const isPhablet = useIsPhablet()
 
   return (
-    <Drawer.Root opened={opened} onClose={close} position={isMobile ? 'bottom' : 'right'} size={isMobile ? '100%' : 'lg'}>
+    <Drawer.Root
+      opened={opened}
+      onClose={close}
+      position={isPhablet ? 'bottom' : 'right'}
+      top={isPhablet ? 25 : 0}
+      size={isPhablet ? '95%' : 'lg'}
+    >
       <Drawer.Overlay />
       <Drawer.Content>
         <Drawer.Header>
