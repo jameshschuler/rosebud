@@ -1,6 +1,6 @@
 export * from './useAuth'
 export * from './useIsMobile'
+export * from './useIsPhablet'
 export * from './useIsTablet'
 export * from './useModal'
 export * from './useNotifications'
-

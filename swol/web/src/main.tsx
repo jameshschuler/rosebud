@@ -1,8 +1,5 @@
 import { MantineProvider } from '@mantine/core'
-import '@mantine/core/styles.css'
-import '@mantine/dates/styles.css'
 import { Notifications } from '@mantine/notifications'
-import '@mantine/notifications/styles.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRouter, ErrorComponent, RouterProvider } from '@tanstack/react-router'
 import dayjs from 'dayjs'
@@ -12,9 +9,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import { AuthProvider } from './AuthProvider.tsx'
+import { NotFound } from './components/NotFound.tsx'
 import { useAuth } from './hooks/index.ts'
 import { routeTree } from './routeTree.gen'
 import { theme } from './theme.ts'
+import '@mantine/core/styles.css'
+import '@mantine/dates/styles.css'
+import '@mantine/notifications/styles.css'
 
 dayjs.extend(utc)
 dayjs.extend(customParseFormat)
@@ -25,11 +26,12 @@ const router = createRouter({
   routeTree,
   defaultPendingComponent: () => (
     // TODO:
-    <div className={`p-2 text-2xl`}>
+    <div>
       {/* <Spinner /> */}
       Loading...
     </div>
   ),
+  defaultNotFoundComponent: NotFound,
   // TODO:
   defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
   defaultPreload: 'intent',
@@ -47,7 +49,7 @@ declare module '@tanstack/react-router' {
 }
 
 if ('serviceWorker' in navigator) {
-  registerSW();
+  registerSW()
 }
 
 function InnerApp() {
