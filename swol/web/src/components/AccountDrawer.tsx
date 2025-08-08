@@ -43,7 +43,7 @@ export function AccountDrawer({ opened, close, username, onSignOut }: AccountDra
           <Flex direction="column" justify="space-between" h="100%">
             <Stack component="nav" gap={16}>
               {navLinks.map(link => (
-                <AppLink key={link.to} icon={link.icon} to={link.to} label={link.label} />
+                <AppLink onClick={close} key={link.to} icon={link.icon} to={link.to} label={link.label} />
               ))}
             </Stack>
             <Box mb={12}>

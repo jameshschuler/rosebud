@@ -9,14 +9,16 @@ interface AppLinkProps {
   to: string
   label: string
   icon: IconDefinition
+  onClick?: () => void
 }
 
-export function AppLink({ to, label, icon }: AppLinkProps) {
+export function AppLink({ onClick, to, label, icon }: AppLinkProps) {
   const location = useLocation()
   const isActive = useMemo(() => location.pathname === to, [to, location.pathname])
 
   return (
     <NavLink
+      onClick={onClick}
       label={label}
       component={Link}
       to={to}
