@@ -1,4 +1,4 @@
-import { pgTable, bigint, timestamp, text, foreignKey, pgPolicy, uuid, unique, varchar, boolean } from "drizzle-orm/pg-core"
+import { pgTable, pgPolicy, bigint, timestamp, text, foreignKey, uuid, boolean, unique, varchar } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
@@ -8,7 +8,12 @@ export const activity = pgTable("activity", {
 	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "activity_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	name: text().notNull(),
-});
+}, (table) => [
+	pgPolicy("Prevent all UPDATE operations", { as: "permissive", for: "update", to: ["public"], using: sql`false` }),
+	pgPolicy("Prevent all Inserts", { as: "permissive", for: "insert", to: ["public"] }),
+	pgPolicy("Prevent all DELETE operations", { as: "permissive", for: "delete", to: ["public"] }),
+	pgPolicy("Enable select for authenticated users only", { as: "permissive", for: "select", to: ["authenticated"] }),
+]);
 
 export const gymCheckin = pgTable("gym_checkin", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
@@ -33,6 +38,28 @@ export const gymCheckin = pgTable("gym_checkin", {
 	pgPolicy("Enable select for users based on user_id", { as: "permissive", for: "select", to: ["authenticated"] }),
 	pgPolicy("Enable insert for authenticated users only", { as: "permissive", for: "insert", to: ["authenticated"] }),
 	pgPolicy("Enable delete for users based on user_id", { as: "permissive", for: "delete", to: ["authenticated"] }),
+	pgPolicy("Deny all access to anon", { as: "restrictive", for: "all", to: ["anon"] }),
+]);
+
+export const programs = pgTable("programs", {
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "programs_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
+	name: text().notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	description: text(),
+	userId: uuid("user_id").notNull(),
+	programType: text("program_type").notNull(),
+	active: boolean().notNull(),
+	author: text().notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "programs_user_id_fkey"
+		}),
+	pgPolicy("Enable all operations for users based on user_id", { as: "restrictive", for: "all", to: ["authenticated"], using: sql`(auth.uid() = user_id)`, withCheck: sql`(( SELECT auth.uid() AS uid) = user_id)`  }),
+	pgPolicy("Deny all access to anon", { as: "restrictive", for: "all", to: ["anon"] }),
 ]);
 
 export const userProfile = pgTable("user_profile", {

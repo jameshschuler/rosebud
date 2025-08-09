@@ -1,7 +1,5 @@
 import { sql } from 'drizzle-orm'
 import { bigint, boolean, foreignKey, pgPolicy, pgSchema, pgTable, text, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import z from 'zod'
 
 const authSchema = pgSchema('auth')
 
@@ -67,54 +65,23 @@ export const userProfile = pgTable('user_profile', {
   pgPolicy('Disable delete', { as: 'permissive', for: 'delete', to: ['public'] }),
 ])
 
-export const selectCheckInsSchema = createSelectSchema(gymCheckin)
-  .extend({
-    activity: z.object({
-      id: z.number(),
-      name: z.string(),
-    }),
-  })
-  .pick({
-    id: true,
-    checkinDate: true,
-    activity: true,
-  })
-  .transform((data) => {
-    return {
-      id: data.id,
-      checkInDate: data.checkinDate,
-      activity: data.activity,
-    }
-  })
-
-export const insertCheckInsSchema = createInsertSchema(gymCheckin, {
-  checkinDate: schema => schema
-    .refine((value) => {
-      // Regex that only accepts UTC timezone (Z or +00:00)
-      const utcDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|\+00:00)$/
-
-      if (!utcDateTimeRegex.test(value)) {
-        return false
-      }
-
-      try {
-        const date = new Date(value)
-        return !Number.isNaN(date.getTime())
-      }
-      catch (e) {
-        return false
-      }
-    }, 'Please enter a valid UTC date and time in the format: YYYY-MM-DDThh:mm:ssZ or YYYY-MM-DDThh:mm:ss+00:00 (example: 2025-04-01T01:01:40Z)'),
-})
-  .extend({
-    activityIds: z.array(z.number()).min(1, 'At least one activity must be selected.'),
-  })
-  .required({
-    checkinDate: true,
-    activityIds: true,
-  })
-  .omit({
-    id: true,
-    createdAt: true,
-    userId: true,
-  })
+export const programs = pgTable('programs', {
+  // You can use { mode: "bigint" } if numbers are exceeding js number limitations
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity({ name: 'programs_id_seq', startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
+  name: text().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }),
+  description: text(),
+  userId: uuid('user_id').notNull(),
+  programType: text('program_type').notNull(),
+  active: boolean().notNull(),
+  author: text().notNull(),
+}, table => [
+  foreignKey({
+    columns: [table.userId],
+    foreignColumns: [users.id],
+    name: 'programs_user_id_fkey',
+  }),
+  pgPolicy('Enable all operations for users based on user_id', { as: 'restrictive', for: 'all', to: ['authenticated'], using: sql`(auth.uid() = user_id)`, withCheck: sql`(( SELECT auth.uid() AS uid) = user_id)` }),
+  pgPolicy('Deny all access to anon', { as: 'restrictive', for: 'all', to: ['anon'] }),
+])

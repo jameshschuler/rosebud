@@ -1,10 +1,10 @@
-import { db } from '@/db'
-import { activity, gymCheckin } from '@/db/schema'
+import type { CreateRoute, ListRoute, RemoveRoute } from './checkIns.routes'
 import type { AppRouteHandler } from '@/lib/types'
 import { and, eq, inArray } from 'drizzle-orm'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import * as HttpStatusPhrases from 'stoker/http-status-phrases'
-import type { CreateRoute, ListRoute, RemoveRoute } from './checkIns.routes'
+import { db } from '@/db'
+import { activity, gymCheckin } from '@/db/schema'
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const user = c.get('user')
@@ -87,13 +87,13 @@ export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
   const user = c.get('user')
   const { ids } = c.req.valid('query')
 
-  const idsToDelete = ids.split(',').map(id => parseInt(id, 10))
+  const idsToDelete = ids.split(',').map(id => Number.parseInt(id, 10))
 
   const result = await db.delete(gymCheckin)
     .where(and(
       inArray(gymCheckin.id, idsToDelete),
       eq(gymCheckin.userId, user!.id),
-    ));
+    ))
 
   if (result.count === 0) {
     return c.json(

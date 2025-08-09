@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { activity, gymCheckin, usersInAuth, userProfile } from "./schema";
+import { activity, gymCheckin, usersInAuth, programs, userProfile } from "./schema";
 
 export const gymCheckinRelations = relations(gymCheckin, ({one}) => ({
 	activity: one(activity, {
@@ -18,7 +18,15 @@ export const activityRelations = relations(activity, ({many}) => ({
 
 export const usersInAuthRelations = relations(usersInAuth, ({many}) => ({
 	gymCheckins: many(gymCheckin),
+	programs: many(programs),
 	userProfiles: many(userProfile),
+}));
+
+export const programsRelations = relations(programs, ({one}) => ({
+	usersInAuth: one(usersInAuth, {
+		fields: [programs.userId],
+		references: [usersInAuth.id]
+	}),
 }));
 
 export const userProfileRelations = relations(userProfile, ({one}) => ({

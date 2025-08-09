@@ -2,6 +2,7 @@ import index from '@/routes/index.route'
 import configureOpenAPI from './lib/configure-open-api'
 import createApp from './lib/create-app'
 import checkIns from './routes/checkIns/checkIns'
+import programs from './routes/programs/programs'
 
 const app = createApp()
 
@@ -14,6 +15,7 @@ configureOpenAPI(app)
 const routes = [
   index,
   checkIns,
+  programs,
 ] as const
 
 routes.forEach((route) => {
