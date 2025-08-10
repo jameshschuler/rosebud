@@ -5,7 +5,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Avatar, Box, Button, Flex, Image, Menu, Title } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
 import swol from '../assets/SWOLa192.png'
 import { useAuth, useIsPhablet } from '../hooks'
@@ -59,7 +59,7 @@ export function AppBar() {
                     </Menu.Target>
 
                     <Menu.Dropdown>
-                      <Menu.Item p={12} leftSection={<FontAwesomeIcon icon={faUser} />}>
+                      <Menu.Item p={12} leftSection={<FontAwesomeIcon icon={faUser} />} component={Link} to="/profile">
                         Profile
                       </Menu.Item>
 

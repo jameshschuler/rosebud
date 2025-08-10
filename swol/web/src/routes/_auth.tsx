@@ -36,7 +36,7 @@ function AuthLayout() {
           mt={isPhablet ? 32 : 0}
           p={24}
           bg="gray.0"
-          bdrs={16}
+          bdrs="md"
         >
           <Outlet />
         </Box>

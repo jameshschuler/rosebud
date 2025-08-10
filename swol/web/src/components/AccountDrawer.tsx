@@ -1,4 +1,3 @@
-import type { AppLinkData } from '@/types'
 import { faArrowRightFromBracket, faCircleXmark, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Divider, Drawer, Flex, Stack, Text } from '@mantine/core'

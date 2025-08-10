@@ -51,7 +51,7 @@ export function CheckInDetailsModal({
       confirmModal.close()
       close()
     }
-    catch (err) {
+    catch {
       error({
         message:
           'Unable to remove check in. Please try again in a moment.',

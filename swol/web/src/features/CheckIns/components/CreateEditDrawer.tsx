@@ -12,6 +12,9 @@ interface CreateEditDrawerProps {
 export function CreateEditDrawer({ opened, close }: CreateEditDrawerProps) {
   const isPhablet = useIsPhablet()
 
+  // TODO: for program select, set default to the user's current program if they have one
+  // TODO: will need to show a program select dropdown for each selected activity type
+
   return (
     <Drawer.Root
       opened={opened}

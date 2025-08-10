@@ -22,6 +22,12 @@ export default antfu(
   {
     rules: {
       'react-hooks/rules-of-hooks': 'error',
+      'unused-imports/no-unused-imports': 'error',
+      'style/jsx-one-expression-per-line': 'off',
+      'unused-imports/no-unused-vars': [
+        'warn',
+        { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
+      ],
       'react-hooks/exhaustive-deps': 'warn',
       'react-refresh/only-export-components': [
         'warn',

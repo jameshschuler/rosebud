@@ -19,7 +19,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    setLoading(true)
     const getUser = async () => {
       const { data } = await supabase.auth.getUser()
       const { user: currentUser } = data
@@ -47,8 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated: auth, session, user, signIn, signOut }}>
+    // TODO:
+    <AuthContext value={{ isAuthenticated: auth, session, user, signIn, signOut }}>
       {!loading && children}
-    </AuthContext.Provider>
+    </AuthContext>
   )
 }

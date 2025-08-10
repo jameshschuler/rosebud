@@ -32,11 +32,7 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "references": [
-    {
-      "path": "../api/tsconfig.json"
-    }
-  ],
+  "references": [{ "path": "../api" }],
   "include": [
     "src"
   ]
