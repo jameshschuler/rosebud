@@ -11,13 +11,13 @@ import { NoData } from './NoData'
 
 export function CheckIns() {
   const { isLoading, data, error, refetch } = useGetAllCheckIns()
-  const { checkIns, hasCheckIns } = useTransformCheckIns(data)
+  const { checkIns } = useTransformCheckIns(data)
   const [opened, { open, close }] = useDisclosure(false)
 
   return (
     <Box>
-      <CheckInsHeader hasCheckIns={hasCheckIns} onAddCheckIn={open} />
-      <Box py="xl">
+      <CheckInsHeader hasCheckIns={checkIns.size > 0} onAddCheckIn={open} />
+      <Box>
         {isLoading && <ListSkeleton />}
         {error && (
           <Error
@@ -27,8 +27,8 @@ export function CheckIns() {
             }}
           />
         )}
-        {!isLoading && !hasCheckIns && !error && <NoData onAction={open} />}
-        {!error && !isLoading && hasCheckIns && (
+        {!isLoading && data?.length === 0 && !error && <NoData onAction={open} />}
+        {!error && !isLoading && checkIns.size > 0 && (
           <CheckInsList checkIns={checkIns} />
         )}
       </Box>

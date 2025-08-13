@@ -1,5 +1,5 @@
 import type { Activity, CheckInDisplayItem } from '@/features/CheckIns/types/checkIns'
-import { Box, Divider, Flex, Title } from '@mantine/core'
+import { Divider, Flex, Title } from '@mantine/core'
 import { useState } from 'react'
 import { useModal } from '@/hooks'
 import { CheckInCard } from './CheckInCard'
@@ -10,22 +10,25 @@ interface CheckInsListProps {
 }
 
 export function CheckInsList({ checkIns }: CheckInsListProps) {
-  const [selectedCheckIns, setSelectedCheckIns] = useState<{ checkInDate: string, details: { id: number, activity: Activity }[] }>()
+  const [selectedCheckIns, setSelectedCheckIns] = useState<{
+    checkInDate: string,
+    details: { id: number, activity: Activity }[]
+  }>()
   const detailsModal = useModal(false)
 
   return (
     <>
       <Flex direction="column">
         {[...checkIns].map(([year, months]) => (
-          <Box key={year}>
+          <Flex direction="column" gap={32} key={year}>
             <Title order={2}>{year}</Title>
-            <Flex direction="column" mt="lg" gap={32}>
+            <Flex direction="column" gap={32}>
               {[...months].map(([month, data]) => (
-                <Box key={month}>
+                <Flex direction="column" gap={16} key={month}>
                   <Title size="md" order={3}>
                     {month}
                   </Title>
-                  <Flex gap={16} wrap="wrap" mt="md">
+                  <Flex gap={16} wrap="wrap">
                     {[...data].map(([checkInDate, details]) => (
                       <CheckInCard
                         key={checkInDate}
@@ -41,11 +44,11 @@ export function CheckInsList({ checkIns }: CheckInsListProps) {
                       />
                     ))}
                   </Flex>
-                </Box>
+                </Flex>
               ))}
             </Flex>
-            <Divider my="xl" />
-          </Box>
+            <Divider mb={32} />
+          </Flex>
         ))}
       </Flex>
       <CheckInDetailsModal

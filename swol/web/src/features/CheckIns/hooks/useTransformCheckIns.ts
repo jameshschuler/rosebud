@@ -24,7 +24,7 @@ export function useTransformCheckIns(
   const isMobile = useIsMobile()
 
   const checkIns = useMemo(() => {
-    const format = isMobile ? 'DD' : 'MM-DD-YYYY'
+    const format = isMobile ? 'DD' : 'MMM DD'
 
     const groupedCheckInsByYear = new Map<
       string,
@@ -96,10 +96,9 @@ export function useTransformCheckIns(
     })
 
     return sortedYearEntries
-  }, [data])
+  }, [data, isMobile])
 
   return {
     checkIns,
-    hasCheckIns: checkIns.size > 0,
   }
 }

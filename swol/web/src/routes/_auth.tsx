@@ -34,7 +34,8 @@ function AuthLayout() {
           mx={isPhablet ? 'auto' : ''}
           mr={isPhablet ? '' : 24}
           mt={isPhablet ? 32 : 0}
-          p={24}
+          mb={24}
+          p={16}
           bg="gray.0"
           bdrs="md"
         >
