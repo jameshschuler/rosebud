@@ -4,7 +4,7 @@ import { AppBar } from '@/components/AppBar'
 import { AppLink } from '@/components/AppLink'
 import { Toolbar } from '@/components/Toolbar'
 import { navLinks } from '@/constants'
-import { useIsPhablet } from '@/hooks'
+import { useIsMobile, useIsPhablet } from '@/hooks'
 
 export const Route = createFileRoute('/_auth')({
   beforeLoad: ({ context }) => {
@@ -19,6 +19,7 @@ export const Route = createFileRoute('/_auth')({
 
 function AuthLayout() {
   const isPhablet = useIsPhablet()
+  const isMobile = useIsMobile()
 
   return (
     <Box mih="100vh">
@@ -35,7 +36,7 @@ function AuthLayout() {
           mr={isPhablet ? '' : 24}
           mt={isPhablet ? 32 : 0}
           mb={24}
-          p={16}
+          p={isMobile ? 16 : 32}
           bg="gray.0"
           bdrs="md"
         >
