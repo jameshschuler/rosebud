@@ -12,6 +12,7 @@ interface CreateEditFormProps {
   close: () => void
 }
 
+// TODO: should this be more like workflow variables UI since each activity can have different data (program,notes)
 export function CreateEditForm({ close }: CreateEditFormProps) {
   const { user } = useAuth()
   const { success, error } = useNotifications()

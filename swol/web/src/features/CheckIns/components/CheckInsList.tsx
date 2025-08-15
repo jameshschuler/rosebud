@@ -11,7 +11,7 @@ interface CheckInsListProps {
 
 export function CheckInsList({ checkIns }: CheckInsListProps) {
   const [selectedCheckIns, setSelectedCheckIns] = useState<{
-    checkInDate: string,
+    checkInDate: string
     details: { id: number, activity: Activity }[]
   }>()
   const detailsModal = useModal(false)

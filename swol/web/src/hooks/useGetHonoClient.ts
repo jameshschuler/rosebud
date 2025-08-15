@@ -3,14 +3,14 @@ import { hc } from 'hono/client'
 import { useMemo } from 'react'
 import { useAuth } from './useAuth'
 
-export type Client = ReturnType<typeof hc<AppType>> | null
+export type Client = ReturnType<typeof hc<AppType>>
 
 export function useGetHonoClient() {
   const { session } = useAuth()
 
   const client = useMemo(() => {
     if (!session?.access_token) {
-      return null
+      throw new Error('Access token is missing, cannot create Hono client.')
     }
 
     return hc<AppType>(import.meta.env.VITE_API_URL, {

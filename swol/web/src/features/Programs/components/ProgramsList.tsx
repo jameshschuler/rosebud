@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Accordion, Flex, Group, ScrollArea, Text } from '@mantine/core'
 import { useGetPrograms } from '../hooks/useGetPrograms'
 import { ListError } from './ListError'
-import { NoData } from './NoData'
 import { ListSkeleton } from './ListSkeleton'
+import { NoData } from './NoData'
 
-export function ProgramsCardContent() {
+export function ProgramsList() {
   const { data, isLoading, error } = useGetPrograms()
 
   if (isLoading) {
