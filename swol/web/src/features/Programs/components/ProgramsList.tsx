@@ -6,6 +6,7 @@ import { ListError } from './ListError'
 import { ListSkeleton } from './ListSkeleton'
 import { NoData } from './NoData'
 
+// TODO: debounce search
 export function ProgramsList() {
   const { data, isLoading, error } = useGetPrograms()
 

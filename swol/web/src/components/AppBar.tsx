@@ -36,10 +36,12 @@ export function AppBar() {
   return (
     <>
       <Flex justify="space-between" align="center" p={{ base: 'md', xs: 'xl' }}>
-        <Flex align="center" gap={16}>
-          <Image src={swol} h={50} w={50} />
-          <Title>Swol</Title>
-        </Flex>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Flex align="center" gap={16}>
+            <Image src={swol} h={50} w={50} />
+            <Title>Swol</Title>
+          </Flex>
+        </Link>
 
         {isAuthenticated && user && (
           <Box>
@@ -50,7 +52,6 @@ export function AppBar() {
                   </Button>
                 )
               : (
-
                   <Menu shadow="md" width={200}>
                     <Menu.Target>
                       <Button variant="transparent" h={40}>
