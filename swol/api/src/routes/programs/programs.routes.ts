@@ -1,10 +1,12 @@
 import { createRoute } from '@hono/zod-openapi'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { jsonContent, jsonContentRequired } from 'stoker/openapi/helpers'
-import { createErrorSchema } from 'stoker/openapi/schemas'
+import { createErrorSchema, IdParamsSchema } from 'stoker/openapi/schemas'
 import { insertProgramsSchema, selectProgramsSchema } from '@/db/schemas/programs.schemas'
 import { authMiddleware } from '@/middlewares/auth'
 import { listProgramsQuerySchema, listProgramsResponseSchema } from './lib'
+import { IdsParamsSchema } from '../checkIns/lib'
+import { notFoundSchema } from '@/lib/constants'
 
 const tags = ['Programs']
 
@@ -44,5 +46,29 @@ export const create = createRoute({
   },
 })
 
+export const remove = createRoute({
+  path: '/programs',
+  method: 'delete',
+  request: {
+    query: IdParamsSchema,
+  },
+  tags,
+  middleware: [authMiddleware] as const,
+  responses: {
+    [HttpStatusCodes.NO_CONTENT]: {
+      description: 'Program deleted',
+    },
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      notFoundSchema,
+      'Program not found',
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      createErrorSchema(IdsParamsSchema),
+      'Invalid id error',
+    ),
+  },
+})
+
+export type RemoveRoute = typeof remove
 export type ListRoute = typeof list
 export type CreateRoute = typeof create

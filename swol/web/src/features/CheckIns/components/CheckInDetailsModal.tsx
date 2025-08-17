@@ -4,10 +4,10 @@ import { faDumbbell, faRunning, faTrashAlt } from '@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Badge, Button, Divider, Flex, Modal, Text, ThemeIcon, Tooltip } from '@mantine/core'
 import { useState } from 'react'
+import { ConfirmModal } from '@/components/ConfirmModal'
 import { useAuth, useModal } from '../../../hooks'
 import { useNotifications } from '../../../hooks/useNotifications'
 import { useRemoveCheckIn } from '../hooks/useRemoveCheckIn'
-import { ConfirmModal } from './ConfirmModal'
 
 const iconMap: Record<number, IconDefinition> = {
   1: faDumbbell,
@@ -134,7 +134,7 @@ export function CheckInDetailsModal({
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>
-      <ConfirmModal opened={confirmModal.opened} close={confirmModal.close} onConfirm={handleRemoveCheckIn} isPending={isPending} />
+      <ConfirmModal entityName="check in" opened={confirmModal.opened} close={confirmModal.close} onConfirm={handleRemoveCheckIn} isPending={isPending} />
     </>
   )
 }

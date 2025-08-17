@@ -62,7 +62,7 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
 
   return (
     <form
-      style={{ display: 'flex', flexDirection: 'column', gap: 32 }}
+      style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
       onSubmit={form.onSubmit(handleOnSubmit)}
     >
       <Checkbox.Group

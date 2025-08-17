@@ -2,7 +2,7 @@ import type { Client } from '@/hooks/useGetHonoClient'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { useGetHonoClient } from '@/hooks/useGetHonoClient'
 
-export const PROGRAMS_QUERY_KEY = ['programs']
+export const PROGRAMS_QUERY_KEY = 'programs'
 
 export function getProgramsQueryOptions(client: Client, query?: string) {
   return queryOptions({

@@ -5,9 +5,10 @@ interface ConfirmModalProps {
   close: () => void
   onConfirm: () => void
   isPending: boolean
+  entityName: string
 }
 
-export function ConfirmModal({ opened, close, onConfirm, isPending }: ConfirmModalProps) {
+export function ConfirmModal({ entityName, opened, close, onConfirm, isPending }: ConfirmModalProps) {
   return (
     <Modal.Root opened={opened} onClose={close} size="lg">
       <Modal.Overlay />
@@ -22,8 +23,8 @@ export function ConfirmModal({ opened, close, onConfirm, isPending }: ConfirmMod
         </Modal.Header>
         <Modal.Body px={24}>
           <Text size="md" fw={500}>
-            Are you sure you want to remove this check in? This action cannot be
-            undone.
+            {`Are you sure you want to remove this ${entityName}? This action cannot be
+            undone.`}
           </Text>
           <Group justify="flex-end" mt="md">
             <Button

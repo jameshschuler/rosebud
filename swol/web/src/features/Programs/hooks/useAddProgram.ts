@@ -37,7 +37,7 @@ export function useAddProgram() {
       })
 
       await queryClient.invalidateQueries({
-        queryKey: PROGRAMS_QUERY_KEY,
+        queryKey: [PROGRAMS_QUERY_KEY],
       })
     },
     onError: (_err) => {

@@ -5,7 +5,7 @@ import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useAddProgram } from '../hooks/useAddProgram'
 import { MenuAction } from './MenuAction'
-import { ProgramsContent } from './ProgramsContent'
+import { ProgramsListContainer } from './ProgramsListContainer'
 
 interface FormValues {
   name: string
@@ -21,6 +21,13 @@ export function ProgramsCard() {
   const { mutateAsync: addProgram, isPending } = useAddProgram()
 
   const form = useForm<FormValues>({
+    initialValues: {
+      name: '',
+      author: '',
+      description: '',
+      programType: '',
+      setAsCurrent: 'No',
+    },
     validate: {
       name: value => (!value ? 'Name is required' : null),
       programType: value => (!value ? 'Program type is required' : null),
@@ -63,7 +70,7 @@ export function ProgramsCard() {
         </Group>
       </Card.Section>
       {mode === 'read' && (
-        <ProgramsContent />
+        <ProgramsListContainer />
       )}
       {mode === 'create' && (
         <>
@@ -74,8 +81,8 @@ export function ProgramsCard() {
               </Button>
             </Flex>
             <ScrollArea mt={16} h={300}>
-              <form onSubmit={form.onSubmit(handleOnSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <Input.Wrapper label="Name" required>
+              <form onSubmit={form.onSubmit(handleOnSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                <Input.Wrapper label="Name" size="md" required>
                   <Input
                     size="md"
                     key={form.key('name')}
@@ -102,7 +109,7 @@ export function ProgramsCard() {
                   key={form.key('setAsCurrent')}
                   {...form.getInputProps('setAsCurrent')}
                 />
-                <Input.Wrapper label="Author">
+                <Input.Wrapper label="Author" size="md">
                   <Input 
                     size="md"
                     placeholder="Enter an author..." 

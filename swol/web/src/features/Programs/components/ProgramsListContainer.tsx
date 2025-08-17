@@ -1,9 +1,9 @@
 import { Card, Input } from '@mantine/core'
-import { useDebouncedValue } from '@mantine/hooks';
+import { useDebouncedValue } from '@mantine/hooks'
 import { useState } from 'react'
 import { ProgramsList } from './ProgramsList'
 
-export function ProgramsContent() {
+export function ProgramsListContainer() {
   const [searchQuery, setSearchQuery] = useState('')
   const [debounced] = useDebouncedValue(searchQuery, 300)
 
@@ -19,7 +19,7 @@ export function ProgramsContent() {
           autoComplete="off"
         />
       </Card.Section>
-      <Card.Section px={24} pb={24} mih={250}>
+      <Card.Section px={24} pb={24}>
         <ProgramsList searchQuery={debounced} />
       </Card.Section>
     </>

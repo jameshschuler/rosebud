@@ -1,10 +1,13 @@
-import { faDumbbell, faPersonRunning, faStar } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Accordion, Flex, Group, ScrollArea, Text } from '@mantine/core'
+import { Accordion, ScrollArea } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
+import { useState } from 'react'
+import { ConfirmModal } from '@/components/ConfirmModal'
 import { useGetPrograms } from '../hooks/useGetPrograms'
+import { useRemoveProgram } from '../hooks/useRemoveProgram'
 import { ListError } from './ListError'
 import { ListSkeleton } from './ListSkeleton'
 import { NoData } from './NoData'
+import { ProgramsContent } from './ProgramContent'
 
 interface ProgramListProps {
   searchQuery?: string
@@ -12,6 +15,18 @@ interface ProgramListProps {
 
 export function ProgramsList({ searchQuery }: ProgramListProps) {
   const { data, isLoading, error } = useGetPrograms(searchQuery)
+  const [opened, { open, close }] = useDisclosure(false)
+  const { mutateAsync: removeProgram, isPending } = useRemoveProgram()
+
+  const [selectedId, setSelectedId] = useState<number | null>(null)
+
+  async function handleRemoveProgram() {
+    await removeProgram({
+      id: selectedId!,
+    })
+
+    close()
+  }
 
   if (isLoading) {
     return <ListSkeleton />
@@ -27,30 +42,23 @@ export function ProgramsList({ searchQuery }: ProgramListProps) {
 
   if (!isLoading && data && data?.programs.length > 0) {
     return (
-      <ScrollArea h={300}>
-        <Accordion radius="md">
-          {data.programs.map(program => (
-            <Accordion.Item key={program.id} value={program.id.toString()}>
-              <Accordion.Control>
-                <Flex direction="column">
-                  <Group>
-                    <Text fw="500">{program.name}</Text>
-                    {program.active && <FontAwesomeIcon color="gold" icon={faStar} />}
-                  </Group>
-                  <Text size="sm">{program.author}</Text>
-                </Flex>
-              </Accordion.Control>
-              <Accordion.Panel pt={11}>
-                <Flex align="center" mb={8} gap={8}>
-                  <FontAwesomeIcon size="sm" fixedWidth icon={program.programType === 'Running' ? faPersonRunning : faDumbbell} />
-                  <Text size="sm">{program.programType}</Text>
-                </Flex>
-                <Text size="sm">{program.description}</Text>
-              </Accordion.Panel>
-            </Accordion.Item>
-          ))}
-        </Accordion>
-      </ScrollArea>
+      <>
+        <ScrollArea h={300}>
+          <Accordion radius="md">
+            {data.programs.map(program => (
+              <ProgramsContent 
+                key={program.id} 
+                program={program} 
+                onDelete={() => {
+                  setSelectedId(program.id)
+                  open()
+                }} 
+              />
+            ))}
+          </Accordion>
+        </ScrollArea>
+        <ConfirmModal opened={opened} close={close} onConfirm={handleRemoveProgram} isPending={isPending} entityName="program" />
+      </>
     )
   }
 

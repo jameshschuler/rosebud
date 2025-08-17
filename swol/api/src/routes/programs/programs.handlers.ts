@@ -1,9 +1,10 @@
-import type { CreateRoute, ListRoute } from './programs.routes'
+import type { CreateRoute, ListRoute, RemoveRoute } from './programs.routes'
 import type { AppRouteHandler } from '@/lib/types'
-import { and, count, desc, eq, ilike, or } from 'drizzle-orm'
-import * as HttpStatusCodes from 'stoker/http-status-codes'
+import { and, count, desc, eq, ilike, inArray, or } from 'drizzle-orm'
 import { db } from '@/db'
 import { programs } from '@/db/schema'
+import * as HttpStatusCodes from 'stoker/http-status-codes'
+import * as HttpStatusPhrases from 'stoker/http-status-phrases'
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const { name, author, programType } = c.req.valid('query')
@@ -99,4 +100,26 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
   const createdProgram = await db.insert(programs).values(values).returning()
 
   return c.json(createdProgram.at(0), HttpStatusCodes.CREATED)
+}
+
+export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
+  const user = c.get('user')
+  const { id } = c.req.valid('query')
+
+  const result = await db.delete(programs)
+    .where(and(
+      eq(programs.id, id),
+      eq(programs.userId, user!.id),
+    ))
+
+  if (result.count === 0) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
+      },
+      HttpStatusCodes.NOT_FOUND,
+    )
+  }
+
+  return c.body(null, HttpStatusCodes.NO_CONTENT)
 }
