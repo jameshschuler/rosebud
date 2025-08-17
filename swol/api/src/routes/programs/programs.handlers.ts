@@ -1,6 +1,6 @@
 import type { CreateRoute, ListRoute } from './programs.routes'
 import type { AppRouteHandler } from '@/lib/types'
-import { and, count, desc, eq, ilike } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, or } from 'drizzle-orm'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { db } from '@/db'
 import { programs } from '@/db/schema'
@@ -9,24 +9,25 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
   const { name, author, programType } = c.req.valid('query')
   const user = c.get('user')
 
-  const conditions = [
-    eq(programs.userId, user!.id),
-  ]
+  const orConditions = []
 
   if (name) {
-    conditions.push(ilike(programs.name, `%${name}%`))
+    orConditions.push(ilike(programs.name, `%${name}%`))
   }
 
   if (author) {
-    conditions.push(ilike(programs.author, `%${author}%`))
+    orConditions.push(ilike(programs.author, `%${author}%`))
   }
 
   if (programType) {
-    conditions.push(eq(programs.programType, programType))
+    orConditions.push(eq(programs.programType, programType))
   }
 
   const rows = await db.query.programs.findMany({
-    where: and(...conditions),
+    where: and(
+      eq(programs.userId, user!.id),
+      or(...orConditions),
+    ),
     orderBy: [desc(programs.createdAt)],
   })
 

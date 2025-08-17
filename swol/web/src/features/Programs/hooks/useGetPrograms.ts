@@ -4,9 +4,9 @@ import { useGetHonoClient } from '@/hooks/useGetHonoClient'
 
 export const PROGRAMS_QUERY_KEY = ['programs']
 
-export function getAllProgramsQueryOptions(client: Client) {
+export function getProgramsQueryOptions(client: Client, query?: string) {
   return queryOptions({
-    queryKey: PROGRAMS_QUERY_KEY,
+    queryKey: [PROGRAMS_QUERY_KEY, query],
     queryFn: async () => {
       if (!client) {
         return {
@@ -16,7 +16,7 @@ export function getAllProgramsQueryOptions(client: Client) {
       }
 
       const res = await client.programs.$get({
-        query: {},
+        query: query ? { author: query, name: query } : {},
       })
 
       if (!res.ok) {
@@ -29,9 +29,9 @@ export function getAllProgramsQueryOptions(client: Client) {
   })
 }
 
-export function useGetPrograms() {
+export function useGetPrograms(query?: string) {
   const { client } = useGetHonoClient()
-  const options = getAllProgramsQueryOptions(client)
+  const options = getProgramsQueryOptions(client, query)
 
   return useQuery(options)
 }

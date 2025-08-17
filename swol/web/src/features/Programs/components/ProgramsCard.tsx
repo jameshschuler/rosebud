@@ -1,10 +1,10 @@
-import type { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { faChevronLeft, faFloppyDisk, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ActionIcon, Button, Card, Flex, Group, Input, Menu, ScrollArea, Select, Text, Textarea } from '@mantine/core'
+import { Button, Card, Flex, Group, Input, Menu, ScrollArea, Select, Text, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useAddProgram } from '../hooks/useAddProgram'
+import { MenuAction } from './MenuAction'
 import { ProgramsContent } from './ProgramsContent'
 
 interface FormValues {
@@ -13,28 +13,6 @@ interface FormValues {
   setAsCurrent: string
   author?: string
   description?: string
-}
-
-interface MenuActionProps {
-  onClick: () => void
-  icon: IconDefinition
-  isPending?: boolean
-}
-
-function MenuAction({ isPending, onClick, icon }: MenuActionProps) {
-  return (
-    <Menu.Target>
-      <ActionIcon
-        variant="subtle"
-        color="gray"
-        size="lg"
-        onClick={onClick}
-        loading={isPending}
-      >
-        <FontAwesomeIcon size="lg" icon={icon} />
-      </ActionIcon>
-    </Menu.Target>
-  )
 }
 
 export function ProgramsCard() {

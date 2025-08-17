@@ -1,4 +1,4 @@
-import { faAt, faDumbbell, faPersonRunning, faStar } from '@fortawesome/free-solid-svg-icons'
+import { faDumbbell, faPersonRunning, faStar } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Accordion, Flex, Group, ScrollArea, Text } from '@mantine/core'
 import { useGetPrograms } from '../hooks/useGetPrograms'
@@ -6,9 +6,12 @@ import { ListError } from './ListError'
 import { ListSkeleton } from './ListSkeleton'
 import { NoData } from './NoData'
 
-// TODO: debounce search
-export function ProgramsList() {
-  const { data, isLoading, error } = useGetPrograms()
+interface ProgramListProps {
+  searchQuery?: string
+}
+
+export function ProgramsList({ searchQuery }: ProgramListProps) {
+  const { data, isLoading, error } = useGetPrograms(searchQuery)
 
   if (isLoading) {
     return <ListSkeleton />
@@ -19,7 +22,7 @@ export function ProgramsList() {
   }
 
   if (!isLoading && data?.programs.length === 0) {
-    return <NoData />
+    return <NoData searchQuery={searchQuery} />
   }
 
   if (!isLoading && data && data?.programs.length > 0) {
@@ -29,19 +32,18 @@ export function ProgramsList() {
           {data.programs.map(program => (
             <Accordion.Item key={program.id} value={program.id.toString()}>
               <Accordion.Control>
-                <Group>
-                  <Text>{program.name}</Text>
-                  {program.active && <FontAwesomeIcon color="gold" icon={faStar} />}
-                </Group>
+                <Flex direction="column">
+                  <Group>
+                    <Text fw="500">{program.name}</Text>
+                    {program.active && <FontAwesomeIcon color="gold" icon={faStar} />}
+                  </Group>
+                  <Text size="sm">{program.author}</Text>
+                </Flex>
               </Accordion.Control>
               <Accordion.Panel pt={11}>
-                <Flex align="center" mb={8} gap={4}>
+                <Flex align="center" mb={8} gap={8}>
                   <FontAwesomeIcon size="sm" fixedWidth icon={program.programType === 'Running' ? faPersonRunning : faDumbbell} />
-                  <Text>{program.programType}</Text>
-                </Flex>
-                <Flex align="center" mb={8} gap={4}>
-                  <FontAwesomeIcon size="sm" fixedWidth icon={faAt} />
-                  <Text>{program.author}</Text>
+                  <Text size="sm">{program.programType}</Text>
                 </Flex>
                 <Text size="sm">{program.description}</Text>
               </Accordion.Panel>
