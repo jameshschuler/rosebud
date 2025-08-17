@@ -1,9 +1,8 @@
-import { Button, Checkbox, Flex, Group, Text, Textarea } from '@mantine/core'
+import { Button, Flex, Group, Select, Text, Textarea } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import { useAuth, useNotifications } from '@/hooks'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { SWOL_GREEN } from '@/theme'
 import { useAddCheckIn } from '../hooks/useAddCheckIn'
@@ -12,12 +11,10 @@ interface CreateEditFormProps {
   close: () => void
 }
 
-// TODO: should this be more like workflow variables UI since each activity can have different data (program,notes)
 export function CreateEditForm({ close }: CreateEditFormProps) {
-  const { user } = useAuth()
-  const { success, error } = useNotifications()
-
   const isMobile = useIsMobile()
+
+  // TODO: load programs
 
   const { mutateAsync: addCheckIn, isPending } = useAddCheckIn()
 
@@ -26,38 +23,24 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
   const form = useForm({
     initialValues: {
       date: dayjs().toDate(),
-      activityIds: new Array<string>(),
+      activityId: '1',
       notes: '',
     },
     validate: {
       date: value => (!value ? 'Date is required' : null),
-      activityIds: value => (value.length === 0 ? 'At least one activity must be selected' : null),
     },
   })
 
-  const handleOnSubmit = async (values: { activityIds: string[], date: Date, notes: string }) => {
-    try {
-      if (!user) {
-        return
-      }
+  const handleOnSubmit = async (values: { activityId: string, programId?: string, date: Date, notes: string }) => {
+    await addCheckIn({
+      checkinDate: dayjs(values.date).utc().format(),
+      activityId: Number(values.activityId),
+      notes: values.notes,
+      programId: values.programId ? Number(values.programId) : undefined,
+    })
 
-      await addCheckIn({
-        checkinDate: dayjs(values.date).utc().format(),
-        activityIds: values.activityIds.map(id => Number.parseInt(id, 10)),
-      })
-
-      success({
-        message: `Added ${values.activityIds.length > 1 ? 'check ins' : 'check in'} successfully.`,
-      })
-
-      form.reset()
-      close()
-    }
-    catch {
-      error({
-        message: 'Unable to add check in. Please try again in a moment.',
-      })
-    }
+    form.reset()
+    close()
   }
 
   return (
@@ -65,18 +48,35 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
       style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
       onSubmit={form.onSubmit(handleOnSubmit)}
     >
-      <Checkbox.Group
-        label="Activities"
-        withAsterisk
-        key={form.key('activityIds')}
+      <Select
         size="md"
-        {...form.getInputProps('activityIds', { type: 'checkbox' })}
-      >
-        <Group mt="sm">
-          <Checkbox value="1" label="Strength Training" />
-          <Checkbox value="2" label="Running" />
-        </Group>
-      </Checkbox.Group>
+        required
+        label="Activity Type"
+        placeholder="Select activity type"
+        data={[
+          {
+            label: 'Strength Training',
+            value: '1',
+          },
+          {
+            label: 'Running',
+            value: '2',
+          },
+        ]}
+        key={form.key('activityId')}
+        {...form.getInputProps('activityId')}
+      />
+
+      <Select
+        size="md"
+        label="Program"
+        placeholder="Select program"
+        data={[
+
+        ]}
+        key={form.key('programId')}
+        {...form.getInputProps('programId')}
+      />
 
       <Flex justify="center">
         <DatePicker
@@ -84,9 +84,9 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
           numberOfColumns={isMobile ? 1 : 2}
           value={selectedDate}
           onChange={(date) => {
-            form.setFieldValue('date', date as Date)
+            form.setFieldValue('date', date as unknown as Date)
             form.validateField('date')
-            setSelectedDate(date as Date)
+            setSelectedDate(date as unknown as Date)
           }}
         />
       </Flex>
@@ -102,8 +102,8 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
           placeholder="Enter some notes..."
           rows={5}
           maxLength={500}
-          key={form.key('notes')}
           size="md"
+          key={form.key('notes')}
           {...form.getInputProps('notes')}
         />
         <Text size="sm" c="dimmed" mt={4}>

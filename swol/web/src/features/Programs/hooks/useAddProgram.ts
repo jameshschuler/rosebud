@@ -12,7 +12,7 @@ export interface AddProgramRequest {
   description?: string
 }
 
-export async function addCheckIn(client: Client, payload: AddProgramRequest) {
+export async function addProgram(client: Client, payload: AddProgramRequest) {
   const response = await client.programs.$post({
     json: payload,
   })
@@ -31,12 +31,12 @@ export function useAddProgram() {
   const { success, error } = useNotifications()
 
   return useMutation({
-    onSuccess: async () => {
+    onSuccess: () => {
       success({
         message: `Added program successfully.`,
       })
 
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: [PROGRAMS_QUERY_KEY],
       })
     },
@@ -45,6 +45,6 @@ export function useAddProgram() {
         message: 'Unable to add program. Please try again in a moment.',
       })
     },
-    mutationFn: (payload: AddProgramRequest) => addCheckIn(client, payload),
+    mutationFn: (payload: AddProgramRequest) => addProgram(client, payload),
   })
 }

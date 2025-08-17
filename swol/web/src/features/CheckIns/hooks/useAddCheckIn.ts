@@ -1,32 +1,28 @@
 import type { Client } from '@/hooks/useGetHonoClient'
-import { useNotifications } from '@mantine/notifications'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNotifications } from '@/hooks'
 import { useGetHonoClient } from '@/hooks/useGetHonoClient'
 import { CHECKINS_QUERY_KEY } from './useGetCheckIns'
 
 export interface AddCheckInRequest {
-  activityIds: number[]
+  activityId: number
   checkinDate: string
+  notes?: string
+  programId?: number
 }
 
 export async function addCheckIn(client: Client, payload: AddCheckInRequest) {
-  try {
-    const response = await client!['check-ins'].$post({
-      json: payload,
-    })
+  const response = await client!['check-ins'].$post({
+    json: payload,
+  })
 
-    if (!response.ok) {
-      throw new Error('Unable to add check in. Please try again in a moment.')
-    }
+  if (!response.ok) {
+    throw new Error('Unable to add check in. Please try again in a moment.')
+  }
 
-    return response.json()
-  }
-  catch (err) {
-    throw err
-  }
+  return response.json()
 }
 
-// TODO: use onError callback to show error notification
 export function useAddCheckIn() {
   const { client } = useGetHonoClient()
   const queryClient = useQueryClient()
@@ -35,8 +31,17 @@ export function useAddCheckIn() {
 
   return useMutation({
     onSuccess: () => {
+      success({
+        message: `Added check in successfully.`,
+      })
+
       queryClient.invalidateQueries({
         queryKey: CHECKINS_QUERY_KEY,
+      })
+    },
+    onError: (_err: Error) => {
+      error({
+        message: 'Unable to add check in. Please try again in a moment.',
       })
     },
     mutationFn: (payload: AddCheckInRequest) => addCheckIn(client, payload),

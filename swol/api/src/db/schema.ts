@@ -13,7 +13,10 @@ export const activity = pgTable('activity', {
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
   name: text().notNull(),
 }, () => [
-  pgPolicy('Enable select for users based on user_id', { as: 'permissive', for: 'select', to: ['authenticated'] }),
+  pgPolicy("Prevent all UPDATE operations", { as: "permissive", for: "update", to: ["public"], using: sql`false` }),
+	pgPolicy("Prevent all Inserts", { as: "permissive", for: "insert", to: ["public"] }),
+	pgPolicy("Prevent all DELETE operations", { as: "permissive", for: "delete", to: ["public"] }),
+	pgPolicy("Enable select for authenticated users only", { as: "permissive", for: "select", to: ["authenticated"] }),
 ])
 
 export const gymCheckin = pgTable('gym_checkin', {
@@ -23,11 +26,19 @@ export const gymCheckin = pgTable('gym_checkin', {
   userId: uuid('user_id').notNull(),
   checkinDate: timestamp('checkin_date', { withTimezone: true, mode: 'string' }).notNull(),
   activityId: bigint('activity_id', { mode: 'number' }).default(sql`'1'`).notNull(),
+  notes: text(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	programId: bigint("program_id", { mode: "number" }),
 }, table => [
   foreignKey({
     columns: [table.userId],
     foreignColumns: [users.id],
     name: 'gym_checkin_user_id_fkey',
+  }),
+  foreignKey({
+    columns: [table.programId],
+    foreignColumns: [programs.id],
+    name: "gym_checkin_program_id_fkey"
   }),
   foreignKey({
     columns: [table.activityId],
@@ -38,6 +49,7 @@ export const gymCheckin = pgTable('gym_checkin', {
   pgPolicy('Enable select for users based on user_id', { as: 'permissive', for: 'select', to: ['authenticated'] }),
   pgPolicy('Enable insert for authenticated users only', { as: 'permissive', for: 'insert', to: ['authenticated'] }),
   pgPolicy('Enable delete for users based on user_id', { as: 'permissive', for: 'delete', to: ['authenticated'] }),
+  pgPolicy("Deny all access to anon", { as: "restrictive", for: "all", to: ["anon"] }),
 ])
 
 export const userProfile = pgTable('user_profile', {

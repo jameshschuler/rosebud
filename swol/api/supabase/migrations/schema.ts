@@ -15,32 +15,6 @@ export const activity = pgTable("activity", {
 	pgPolicy("Enable select for authenticated users only", { as: "permissive", for: "select", to: ["authenticated"] }),
 ]);
 
-export const gymCheckin = pgTable("gym_checkin", {
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "gym_checkin_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
-	userId: uuid("user_id").notNull(),
-	checkinDate: timestamp("checkin_date", { withTimezone: true, mode: 'string' }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	activityId: bigint("activity_id", { mode: "number" }).default(sql`'1'`).notNull(),
-}, (table) => [
-	foreignKey({
-			columns: [table.activityId],
-			foreignColumns: [activity.id],
-			name: "gym_checkin_activity_id_fkey"
-		}),
-	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: "gym_checkin_user_id_fkey"
-		}),
-	pgPolicy("Enable update for users based on user_id", { as: "permissive", for: "update", to: ["authenticated"], using: sql`(auth.uid() = user_id)` }),
-	pgPolicy("Enable select for users based on user_id", { as: "permissive", for: "select", to: ["authenticated"] }),
-	pgPolicy("Enable insert for authenticated users only", { as: "permissive", for: "insert", to: ["authenticated"] }),
-	pgPolicy("Enable delete for users based on user_id", { as: "permissive", for: "delete", to: ["authenticated"] }),
-	pgPolicy("Deny all access to anon", { as: "restrictive", for: "all", to: ["anon"] }),
-]);
-
 export const programs = pgTable("programs", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "programs_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
@@ -85,4 +59,38 @@ export const userProfile = pgTable("user_profile", {
 	pgPolicy("Enable update for users based on user_id", { as: "permissive", for: "update", to: ["authenticated"], using: sql`(auth.uid() = user_id)` }),
 	pgPolicy("Enable select for users based on user_id", { as: "permissive", for: "select", to: ["authenticated"] }),
 	pgPolicy("Disable delete", { as: "permissive", for: "delete", to: ["public"] }),
+]);
+
+export const gymCheckin = pgTable("gym_checkin", {
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "gym_checkin_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
+	userId: uuid("user_id").notNull(),
+	checkinDate: timestamp("checkin_date", { withTimezone: true, mode: 'string' }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	activityId: bigint("activity_id", { mode: "number" }).default(sql`'1'`).notNull(),
+	notes: text(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	programId: bigint("program_id", { mode: "number" }),
+}, (table) => [
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "gym_checkin_user_id_fkey"
+		}),
+	foreignKey({
+			columns: [table.programId],
+			foreignColumns: [programs.id],
+			name: "gym_checkin_program_id_fkey"
+		}),
+	foreignKey({
+			columns: [table.activityId],
+			foreignColumns: [activity.id],
+			name: "gym_checkin_activity_id_fkey"
+		}),
+	pgPolicy("Enable update for users based on user_id", { as: "permissive", for: "update", to: ["authenticated"], using: sql`(auth.uid() = user_id)` }),
+	pgPolicy("Enable select for users based on user_id", { as: "permissive", for: "select", to: ["authenticated"] }),
+	pgPolicy("Enable insert for authenticated users only", { as: "permissive", for: "insert", to: ["authenticated"] }),
+	pgPolicy("Enable delete for users based on user_id", { as: "permissive", for: "delete", to: ["authenticated"] }),
+	pgPolicy("Deny all access to anon", { as: "restrictive", for: "all", to: ["anon"] }),
 ]);

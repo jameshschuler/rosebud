@@ -6,6 +6,10 @@ export const gymCheckinRelations = relations(gymCheckin, ({ one }) => ({
     fields: [gymCheckin.activityId],
     references: [activity.id],
   }),
+  program: one(programs, {
+		fields: [gymCheckin.programId],
+		references: [programs.id]
+	}),
   usersInAuth: one(users, {
     fields: [gymCheckin.userId],
     references: [users.id],

@@ -2,7 +2,7 @@ import { createRoute, z } from '@hono/zod-openapi'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { jsonContent, jsonContentRequired } from 'stoker/openapi/helpers'
 import { createErrorSchema } from 'stoker/openapi/schemas'
-import { insertCheckInsSchema, selectCheckInsSchema } from '@/db/schemas/checkIns.schemas'
+import { insertCheckInsSchema, selectCheckInSchema, selectCheckInsSchema } from '@/db/schemas/checkIns.schemas'
 import { notFoundSchema } from '@/lib/constants'
 import { authMiddleware } from '@/middlewares/auth'
 import { IdsParamsSchema } from './lib'
@@ -37,8 +37,12 @@ export const create = createRoute({
   middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.CREATED]: jsonContent(
-      z.array(selectCheckInsSchema),
+      selectCheckInSchema,
       'The created check-in',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      notFoundSchema,
+      'Activity or program not found',
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(insertCheckInsSchema),

@@ -4,24 +4,33 @@ import { and, eq, inArray } from 'drizzle-orm'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import * as HttpStatusPhrases from 'stoker/http-status-phrases'
 import { db } from '@/db'
-import { activity, gymCheckin } from '@/db/schema'
+import { activity, gymCheckin, programs } from '@/db/schema'
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const user = c.get('user')
   const rows = await db.query.gymCheckin.findMany({
     where: eq(gymCheckin.userId, user!.id),
+    columns: {
+      id: true,
+      checkinDate: true,
+    },
     with: {
-      activity: true,
+      activity: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
+      program: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
     },
   })
 
-  const checkIns = rows.map(row => ({
-    id: row.id,
-    checkInDate: row.checkinDate,
-    activity: row.activity,
-  }))
-
-  return c.json(checkIns)
+  return c.json(rows)
 }
 
 export const create: AppRouteHandler<CreateRoute> = async (c) => {
@@ -29,58 +38,49 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
 
   const checkIn = c.req.valid('json')
 
-  const values = checkIn.activityIds.map((id) => {
-    return {
-      userId: user!.id,
-      checkinDate: checkIn.checkinDate,
-      activityId: id,
-    }
+  const relatedActivity = await db.query.activity.findFirst({
+    where: eq(activity.id, checkIn.activityId),
   })
 
-  const createdCheckIns = await db.insert(gymCheckin).values(values).returning()
-  const checkIns = await parseCheckIns(createdCheckIns)
-
-  return c.json(checkIns, HttpStatusCodes.CREATED)
-}
-
-async function parseCheckIns(createdCheckIns: {
-  id: number
-  createdAt: string | null
-  userId: string
-  checkinDate: string
-  activityId: number
-}[]) {
-  const checkIns = new Array<{
-    id: number
-    checkInDate: string
-    activityId: number
-    activity: {
-      id: number
-      name: string
-    }
-  }>()
-
-  createdCheckIns.forEach(async (createdCheckIn) => {
-    const relatedActivity = await db.query.activity.findFirst({
-      where: eq(activity.id, createdCheckIn.activityId),
-    })
-
-    if (!relatedActivity) {
-      throw new Error('Failed to find related activity for the check-in')
-    }
-
-    checkIns.push({
-      id: createdCheckIn.id,
-      checkInDate: createdCheckIn.checkinDate,
-      activityId: createdCheckIn.activityId,
-      activity: {
-        id: relatedActivity?.id,
-        name: relatedActivity?.name,
+  if (!relatedActivity) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
       },
+      HttpStatusCodes.NOT_FOUND,
+    )
+  }
+
+  if (checkIn.programId) {
+    const relatedProgram = await db.query.programs.findFirst({
+      where: eq(programs.id, checkIn.programId),
     })
+
+    if (!relatedProgram) {
+      return c.json(
+        {
+          message: HttpStatusPhrases.NOT_FOUND,
+        },
+        HttpStatusCodes.NOT_FOUND,
+      )
+    }
+  }
+
+  const [createdCheckIn] = await db.insert(gymCheckin).values({
+    userId: user!.id,
+    checkinDate: checkIn.checkinDate,
+    activityId: checkIn.activityId,
+    notes: checkIn.notes,
+    programId: checkIn.programId,
+  }).returning({
+    id: gymCheckin.id,
+    checkinDate: gymCheckin.checkinDate,
+    activityId: gymCheckin.activityId,
+    notes: gymCheckin.notes,
+    programId: gymCheckin.programId,
   })
 
-  return checkIns
+  return c.json(createdCheckIn, HttpStatusCodes.CREATED)
 }
 
 export const remove: AppRouteHandler<RemoveRoute> = async (c) => {

@@ -5,7 +5,7 @@ export interface Activity {
 
 export interface CheckIn {
   id: number
-  checkInDate: string
+  checkinDate: string
   activity: Activity
 }
 

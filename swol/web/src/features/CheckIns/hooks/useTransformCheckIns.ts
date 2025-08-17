@@ -36,7 +36,7 @@ export function useTransformCheckIns(
     }
 
     data.forEach((d) => {
-      const date = dayjs(d.checkInDate)
+      const date = dayjs(d.checkinDate)
       const year = date.format('YYYY')
       const month = date.format('MMMM')
 
@@ -48,16 +48,16 @@ export function useTransformCheckIns(
       const monthCheckIns = yearMap?.get(month)
       if (!monthCheckIns) {
         yearMap?.set(month, new Map([
-          [dayjs(d.checkInDate).format(format), [{ id: d.id, activity: d.activity }]],
+          [dayjs(d.checkinDate).format(format), [{ id: d.id, activity: d.activity }]],
         ]))
       }
       else {
-        const existingDate = monthCheckIns.get(dayjs(d.checkInDate).format(format))
+        const existingDate = monthCheckIns.get(dayjs(d.checkinDate).format(format))
         if (existingDate) {
           existingDate.push({ id: d.id, activity: d.activity })
         }
         else {
-          monthCheckIns.set(dayjs(d.checkInDate).format(format), [{ id: d.id, activity: d.activity }])
+          monthCheckIns.set(dayjs(d.checkinDate).format(format), [{ id: d.id, activity: d.activity }])
         }
       }
     })

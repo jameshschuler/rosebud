@@ -29,12 +29,12 @@ export function useRemoveProgram() {
   const { success, error } = useNotifications()
 
   return useMutation({
-    onSuccess: async () => {
+    onSuccess: () => {
       success({
         message: `Removed program successfully.`,
       })
 
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: [PROGRAMS_QUERY_KEY],
       })
     },
