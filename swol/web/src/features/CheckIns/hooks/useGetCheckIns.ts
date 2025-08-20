@@ -1,14 +1,19 @@
-import type { Client } from '@/hooks/useGetHonoClient'
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import { useGetHonoClient } from '@/hooks/useGetHonoClient'
+import { useAuth } from '@/hooks'
+import { client } from '@/lib/honoClient'
 
 export const CHECKINS_QUERY_KEY = ['check-ins']
 
-export function getAllCheckInsQueryOptions(client: Client) {
+export function getAllCheckInsQueryOptions(accessToken?: string) {
   return queryOptions({
     queryKey: CHECKINS_QUERY_KEY,
     queryFn: async () => {
-      const res = await client['check-ins'].$get()
+      const res = await client['check-ins'].$get({}, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+        },
+      })
       const data = await res.json()
       
       return data
@@ -17,8 +22,7 @@ export function getAllCheckInsQueryOptions(client: Client) {
 }
 
 export function useGetAllCheckIns() {
-  const { client } = useGetHonoClient()
-  const options = getAllCheckInsQueryOptions(client)
-
+  const { session } = useAuth()
+  const options = getAllCheckInsQueryOptions(session?.access_token)
   return useQuery(options)
 }

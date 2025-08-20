@@ -1,7 +1,6 @@
-import type { Client } from '@/hooks/useGetHonoClient'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useNotifications } from '@/hooks'
-import { useGetHonoClient } from '@/hooks/useGetHonoClient'
+import { useAuth, useNotifications } from '@/hooks'
+import { client } from '@/lib/honoClient'
 import { CHECKINS_QUERY_KEY } from './useGetCheckIns'
 
 export interface AddCheckInRequest {
@@ -11,9 +10,14 @@ export interface AddCheckInRequest {
   programId?: number
 }
 
-export async function addCheckIn(client: Client, payload: AddCheckInRequest) {
-  const response = await client!['check-ins'].$post({
+export async function addCheckIn(payload: AddCheckInRequest, accessToken?: string) {
+  const response = await client['check-ins'].$post({
     json: payload,
+  }, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: 'application/json',
+    },
   })
 
   if (!response.ok) {
@@ -24,7 +28,7 @@ export async function addCheckIn(client: Client, payload: AddCheckInRequest) {
 }
 
 export function useAddCheckIn() {
-  const { client } = useGetHonoClient()
+  const { session } = useAuth()
   const queryClient = useQueryClient()
 
   const { success, error } = useNotifications()
@@ -44,6 +48,6 @@ export function useAddCheckIn() {
         message: 'Unable to add check in. Please try again in a moment.',
       })
     },
-    mutationFn: (payload: AddCheckInRequest) => addCheckIn(client, payload),
+    mutationFn: (payload: AddCheckInRequest) => addCheckIn(payload, session?.access_token),
   })
 }

@@ -5,7 +5,7 @@ export interface AuthContextProps {
   isAuthenticated: boolean
   session: Session | null
   user: User | null
-  signIn: (provider: 'github' | 'google') => {}
+  signIn: (provider: 'github' | 'google') => Promise<void>
   signOut: () => Promise<void>
 }
 

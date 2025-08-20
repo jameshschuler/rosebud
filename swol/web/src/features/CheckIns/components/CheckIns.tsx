@@ -1,4 +1,4 @@
-import { Box } from '@mantine/core'
+import { Box, Flex } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useGetAllCheckIns } from '@/features/CheckIns/hooks/useGetCheckIns'
 import { useTransformCheckIns } from '../hooks/useTransformCheckIns'
@@ -15,7 +15,7 @@ export function CheckIns() {
   const [opened, { open, close }] = useDisclosure(false)
 
   return (
-    <Box>
+    <Flex direction="column" gap={24}>
       <CheckInsHeader hasCheckIns={checkIns.size > 0} onAddCheckIn={open} />
       <Box>
         {isLoading && <ListSkeleton />}
@@ -34,6 +34,6 @@ export function CheckIns() {
       </Box>
 
       <CreateEditDrawer opened={opened} close={close} />
-    </Box>
+    </Flex>
   )
 }

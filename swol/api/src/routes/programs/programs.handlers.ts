@@ -1,6 +1,6 @@
 import type { CreateRoute, ListRoute, RemoveRoute } from './programs.routes'
 import type { AppRouteHandler } from '@/lib/types'
-import { and, count, desc, eq, ilike, inArray, or } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, or } from 'drizzle-orm'
 import { db } from '@/db'
 import { programs } from '@/db/schema'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
@@ -104,7 +104,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
 
 export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
   const user = c.get('user')
-  const { id } = c.req.valid('query')
+  const { id } = c.req.valid('param')
 
   const result = await db.delete(programs)
     .where(and(

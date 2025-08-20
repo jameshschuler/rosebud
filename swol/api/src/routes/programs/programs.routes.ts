@@ -50,7 +50,7 @@ export const remove = createRoute({
   path: '/programs',
   method: 'delete',
   request: {
-    query: IdParamsSchema,
+    params: IdParamsSchema,
   },
   tags,
   middleware: [authMiddleware] as const,
@@ -69,6 +69,6 @@ export const remove = createRoute({
   },
 })
 
-export type RemoveRoute = typeof remove
 export type ListRoute = typeof list
 export type CreateRoute = typeof create
+export type RemoveRoute = typeof remove

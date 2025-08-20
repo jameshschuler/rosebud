@@ -1,7 +1,6 @@
-import type { Client } from '@/hooks/useGetHonoClient'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useNotifications } from '@/hooks'
-import { useGetHonoClient } from '@/hooks/useGetHonoClient'
+import { useAuth, useNotifications } from '@/hooks'
+import { client } from '@/lib/honoClient'
 import { PROGRAMS_QUERY_KEY } from './useGetPrograms'
 
 export interface AddProgramRequest {
@@ -12,9 +11,14 @@ export interface AddProgramRequest {
   description?: string
 }
 
-export async function addProgram(client: Client, payload: AddProgramRequest) {
+export async function addProgram(payload: AddProgramRequest, accessToken?: string) {
   const response = await client.programs.$post({
     json: payload,
+  }, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: 'application/json',
+    },
   })
 
   if (!response.ok) {
@@ -25,7 +29,7 @@ export async function addProgram(client: Client, payload: AddProgramRequest) {
 }
 
 export function useAddProgram() {
-  const { client } = useGetHonoClient()
+  const { session } = useAuth()
   const queryClient = useQueryClient()
 
   const { success, error } = useNotifications()
@@ -45,6 +49,6 @@ export function useAddProgram() {
         message: 'Unable to add program. Please try again in a moment.',
       })
     },
-    mutationFn: (payload: AddProgramRequest) => addProgram(client, payload),
+    mutationFn: (payload: AddProgramRequest) => addProgram(payload, session?.access_token),
   })
 }

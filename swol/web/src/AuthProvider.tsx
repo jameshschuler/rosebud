@@ -14,44 +14,28 @@ async function signOut() {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [auth, setAuth] = useState<boolean>(false)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser()
-      const { user: currentUser } = data
-      setUser(currentUser)
-      setAuth(!!currentUser)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+      setUser(session?.user ?? null)
       setLoading(false)
-    }
-    getUser()
-
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        setUser(session?.user ?? null)
-        setSession(session)
-        setAuth(true)
-      }
-      else if (event === 'SIGNED_OUT') {
-        setUser(null)
-        setAuth(false)
-        setSession(null)
-      }
     })
+
     return () => {
-      data.subscription.unsubscribe()
+      subscription.unsubscribe()
     }
   }, [])
 
   const contextValue = useMemo(() => ({
-    isAuthenticated: auth,
+    isAuthenticated: !!user,
     session,
     user,
     signIn,
     signOut,
-  }), [auth, session, user])
+  }), [session, user])
 
   return (
     <AuthContext value={contextValue}>

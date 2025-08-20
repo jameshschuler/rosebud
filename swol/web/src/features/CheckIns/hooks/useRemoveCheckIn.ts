@@ -1,42 +1,52 @@
-import type { Client } from '@/hooks/useGetHonoClient'
 import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
-import { useGetHonoClient } from '@/hooks/useGetHonoClient'
+import { useAuth, useNotifications } from '@/hooks'
+import { client } from '@/lib/honoClient'
 import { CHECKINS_QUERY_KEY } from './useGetCheckIns'
 
 export interface RemoveCheckInRequest {
   checkInIds: number[]
 }
 
-export async function removeCheckIn(client: Client, payload: RemoveCheckInRequest) {
-  try {
-    const response = await client!['check-ins'].$delete({
-      query: {
-        ids: payload.checkInIds.join(','),
-      },
-    })
+export async function removeCheckIn(payload: RemoveCheckInRequest, accessToken?: string) {
+  const response = await client['check-ins'].$delete({
+    query: {
+      ids: payload.checkInIds.join(','),
+    },
+  }, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: 'application/json',
+    },
+  })
 
-    if (!response.ok) {
-      throw new Error('Unable to remove check in(s). Please try again in a moment.')
-    }
-  }
-  catch (err) {
-    throw err
+  if (!response.ok) {
+    throw new Error('Unable to remove check in(s). Please try again in a moment.')
   }
 }
 
 export function useRemoveCheckIn() {
-  const { client } = useGetHonoClient()
+  const { session } = useAuth()
   const queryClient = useQueryClient()
+  const { success, error } = useNotifications()
 
   return useMutation({
     onSuccess: () => {
+      success({
+        message: `Removed check in successfully.`,
+      })
+
       queryClient.invalidateQueries({
         queryKey: CHECKINS_QUERY_KEY,
       })
     },
-    mutationFn: (payload: RemoveCheckInRequest) => removeCheckIn(client, payload),
+    onError: (_err: Error) => {
+      error({
+        message: 'Unable to remove check in. Please try again in a moment.',
+      })
+    },
+    mutationFn: (payload: RemoveCheckInRequest) => removeCheckIn(payload, session?.access_token),
   })
 }

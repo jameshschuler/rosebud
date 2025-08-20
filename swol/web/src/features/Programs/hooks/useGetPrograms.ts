@@ -1,10 +1,10 @@
-import type { Client } from '@/hooks/useGetHonoClient'
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import { useGetHonoClient } from '@/hooks/useGetHonoClient'
+import { useAuth } from '@/hooks'
+import { client } from '@/lib/honoClient'
 
 export const PROGRAMS_QUERY_KEY = 'programs'
 
-export function getProgramsQueryOptions(client: Client, query?: string) {
+export function getProgramsQueryOptions(query?: string, accessToken?: string) {
   return queryOptions({
     queryKey: [PROGRAMS_QUERY_KEY, query],
     queryFn: async () => {
@@ -17,6 +17,11 @@ export function getProgramsQueryOptions(client: Client, query?: string) {
 
       const res = await client.programs.$get({
         query: query ? { author: query, name: query } : {},
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+        },
       })
 
       if (!res.ok) {
@@ -30,8 +35,8 @@ export function getProgramsQueryOptions(client: Client, query?: string) {
 }
 
 export function useGetPrograms(query?: string) {
-  const { client } = useGetHonoClient()
-  const options = getProgramsQueryOptions(client, query)
+  const { session } = useAuth()
+  const options = getProgramsQueryOptions(query, session?.access_token)
 
   return useQuery(options)
 }

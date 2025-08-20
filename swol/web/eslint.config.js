@@ -25,6 +25,7 @@ export default antfu(
       'unused-imports/no-unused-imports': 'error',
       'style/jsx-one-expression-per-line': 'off',
       'style/no-trailing-spaces': 'off',
+      'style/brace-style': ['error', '1tbs'],
       'unused-imports/no-unused-vars': [
         'warn',
         { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
