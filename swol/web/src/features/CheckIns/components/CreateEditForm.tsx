@@ -1,11 +1,27 @@
+import type { ComboboxItem, SelectProps} from '@mantine/core';
+import { faCheck, faStar } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Flex, Group, Select, Text, Textarea } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useGetPrograms } from '@/features/Programs/hooks/useGetPrograms'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { SWOL_GREEN } from '@/theme'
 import { useAddCheckIn } from '../hooks/useAddCheckIn'
+
+interface ExtendedComboboxItem extends ComboboxItem {
+  isCurrent?: boolean
+}
+
+const renderSelectOption: SelectProps['renderOption'] = ({ option, checked = false }: { option: ExtendedComboboxItem, checked?: boolean }) => (
+  <Group flex="1" gap="xs">
+    {option.label}
+    {option.isCurrent && <FontAwesomeIcon color="gold" icon={faStar} />}
+    {checked && <FontAwesomeIcon style={{ marginInlineStart: 'auto' }} icon={faCheck} />}
+  </Group>
+)
 
 interface CreateEditFormProps {
   close: () => void
@@ -14,7 +30,7 @@ interface CreateEditFormProps {
 export function CreateEditForm({ close }: CreateEditFormProps) {
   const isMobile = useIsMobile()
 
-  // TODO: load programs
+  const { data: programsData, isLoading } = useGetPrograms()
 
   const { mutateAsync: addCheckIn, isPending } = useAddCheckIn()
 
@@ -42,6 +58,13 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
     form.reset()
     close()
   }
+
+  useEffect(() => {
+    const activityName = form.values.activityId === '1' ? 'Strength Training' : 'Running'
+    if (programsData?.currentPrograms && programsData.currentPrograms[activityName]) {
+      form.setFieldValue('programId', programsData.currentPrograms[activityName].id.toString())
+    }
+  }, [form.values.activityId, programsData?.currentPrograms])
 
   return (
     <form
@@ -71,9 +94,14 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
         size="md"
         label="Program"
         placeholder="Select program"
-        data={[
-
-        ]}
+        disabled={isLoading}
+        data={programsData?.programs.map(program => ({
+          label: program.name,
+          value: program.id.toString(),
+          isCurrent: programsData.currentPrograms?.[program.programType]?.id === program.id,
+        }))}
+        renderOption={renderSelectOption}
+        nothingFoundMessage="No programs created yet"
         key={form.key('programId')}
         {...form.getInputProps('programId')}
       />
