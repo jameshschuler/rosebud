@@ -25,7 +25,7 @@ export function Toolbar() {
       {navLinks.map((link) => {
         return (
           <ActionIcon flex={1} key={link.to} variant="transparent" aria-label={link.label} size={48} component={Link} to={link.to} color={isActive(link.to) ? SWOL_GREEN : 'gray'}>
-            <FontAwesomeIcon icon={link.icon} size="xl" />
+            <FontAwesomeIcon icon={isActive(link.to) ? link.activeIcon : link.icon} size="xl" />
             <VisuallyHidden>{link.label}</VisuallyHidden>
           </ActionIcon>
         )

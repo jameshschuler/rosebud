@@ -1,4 +1,4 @@
-import type { IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import type { AppLinkData } from '@/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, NavLink } from '@mantine/core'
 import { Link, useLocation } from '@tanstack/react-router'
@@ -6,13 +6,12 @@ import { useMemo } from 'react'
 import { SWOL_GREEN } from '@/theme'
 
 interface AppLinkProps {
-  to: string
-  label: string
-  icon: IconDefinition
+  link: AppLinkData
   onClick?: () => void
 }
 
-export function AppLink({ onClick, to, label, icon }: AppLinkProps) {
+export function AppLink({ onClick, link }: AppLinkProps) {
+  const { activeIcon, icon, to, label } = link
   const location = useLocation()
   const isActive = useMemo(() => location.pathname === to, [to, location.pathname])
 
@@ -24,7 +23,7 @@ export function AppLink({ onClick, to, label, icon }: AppLinkProps) {
       to={to}
       leftSection={(
         <Box mr={12}>
-          <FontAwesomeIcon icon={icon} size={isActive ? 'xl' : undefined} color={isActive ? SWOL_GREEN : 'gray'} />
+          <FontAwesomeIcon icon={isActive ? activeIcon : icon} size={isActive ? 'xl' : undefined} color={isActive ? SWOL_GREEN : 'gray'} />
         </Box>
       )}
       bg="none"

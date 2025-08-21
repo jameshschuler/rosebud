@@ -27,7 +27,7 @@ function AuthLayout() {
       <Flex mb={100} flex={1}>
         <Stack component="nav" w="20%" gap={16} px={24} display={isPhablet ? 'none' : 'flex'}>
           {navLinks.map(link => (
-            <AppLink key={link.to} icon={link.icon} to={link.to} label={link.label} />
+            <AppLink key={link.to} link={link} />
           ))}
         </Stack>
         <Box
