@@ -1,4 +1,4 @@
-import type { ComboboxItem, SelectProps} from '@mantine/core';
+import type { ComboboxItem, SelectProps } from '@mantine/core'
 import { faCheck, faStar } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Flex, Group, Select, Text, Textarea } from '@mantine/core'

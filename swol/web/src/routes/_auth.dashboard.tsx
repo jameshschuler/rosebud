@@ -1,5 +1,6 @@
+import { Box } from '@mantine/core'
 import { createFileRoute } from '@tanstack/react-router'
-
+import { ComingSoon } from '@/components/ComingSoon'
 import { useAuth } from '@/hooks/useAuth'
 
 export const Route = createFileRoute('/_auth/dashboard')({
@@ -10,13 +11,11 @@ function DashboardPage() {
   const auth = useAuth()
 
   return (
-    <section className="grid gap-2 p-2">
+    <Box>
       <p>
-        Hi
-        {auth.user?.email}
-        !
+        Hi {auth.user?.email}!
       </p>
-      <p>You are currently on the dashboard route.</p>
-    </section>
+      <ComingSoon />
+    </Box>
   )
 }

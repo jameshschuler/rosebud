@@ -22,14 +22,14 @@ export function AppLink({ onClick, link }: AppLinkProps) {
       component={Link}
       to={to}
       leftSection={(
-        <Box mr={12}>
+        <Box>
           <FontAwesomeIcon icon={isActive ? activeIcon : icon} size={isActive ? 'xl' : undefined} color={isActive ? SWOL_GREEN : 'gray'} />
         </Box>
       )}
       bg="none"
       styles={{
         label: {
-          fontSize: isActive ? 20 : 18,
+          fontSize: isActive ? 18 : 16,
           fontWeight: isActive ? 600 : 500,
           color: isActive ? SWOL_GREEN : 'gray',
         },

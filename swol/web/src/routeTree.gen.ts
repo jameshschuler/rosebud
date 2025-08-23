@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthProgramsRouteImport } from './routes/_auth.programs'
 import { Route as AuthProfileRouteImport } from './routes/_auth.profile'
 import { Route as AuthMilestonesRouteImport } from './routes/_auth.milestones'
 import { Route as AuthGoalsRouteImport } from './routes/_auth.goals'
@@ -26,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthProgramsRoute = AuthProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthProfileRoute = AuthProfileRouteImport.update({
   id: '/profile',
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/goals': typeof AuthGoalsRoute
   '/milestones': typeof AuthMilestonesRoute
   '/profile': typeof AuthProfileRoute
+  '/programs': typeof AuthProgramsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/goals': typeof AuthGoalsRoute
   '/milestones': typeof AuthMilestonesRoute
   '/profile': typeof AuthProfileRoute
+  '/programs': typeof AuthProgramsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/_auth/goals': typeof AuthGoalsRoute
   '/_auth/milestones': typeof AuthMilestonesRoute
   '/_auth/profile': typeof AuthProfileRoute
+  '/_auth/programs': typeof AuthProgramsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/milestones'
     | '/profile'
+    | '/programs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/milestones'
     | '/profile'
+    | '/programs'
   id:
     | '__root__'
     | '/'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/_auth/goals'
     | '/_auth/milestones'
     | '/_auth/profile'
+    | '/_auth/programs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -138,6 +150,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/programs': {
+      id: '/_auth/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof AuthProgramsRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/profile': {
       id: '/_auth/profile'
@@ -191,6 +210,7 @@ interface AuthRouteChildren {
   AuthGoalsRoute: typeof AuthGoalsRoute
   AuthMilestonesRoute: typeof AuthMilestonesRoute
   AuthProfileRoute: typeof AuthProfileRoute
+  AuthProgramsRoute: typeof AuthProgramsRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -200,6 +220,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthGoalsRoute: AuthGoalsRoute,
   AuthMilestonesRoute: AuthMilestonesRoute,
   AuthProfileRoute: AuthProfileRoute,
+  AuthProgramsRoute: AuthProgramsRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

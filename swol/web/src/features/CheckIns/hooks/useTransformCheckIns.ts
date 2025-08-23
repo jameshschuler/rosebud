@@ -50,13 +50,11 @@ export function useTransformCheckIns(
         yearMap?.set(month, new Map([
           [dayjs(d.checkinDate).format(format), [{ id: d.id, activity: d.activity }]],
         ]))
-      }
-      else {
+      } else {
         const existingDate = monthCheckIns.get(dayjs(d.checkinDate).format(format))
         if (existingDate) {
           existingDate.push({ id: d.id, activity: d.activity })
-        }
-        else {
+        } else {
           monthCheckIns.set(dayjs(d.checkinDate).format(format), [{ id: d.id, activity: d.activity }])
         }
       }

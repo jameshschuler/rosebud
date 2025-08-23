@@ -59,8 +59,7 @@ export function ProgramsCard() {
               onClick={async () => {
                 if (mode === 'create') {
                   await handleOnSubmit(form.values)
-                }
-                else {
+                } else {
                   setMode('create')
                 }
               }}
