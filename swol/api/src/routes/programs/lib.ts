@@ -32,7 +32,7 @@ export const listProgramsQuerySchema = z.object({
 })
 
 export const listProgramsResponseSchema = z.object({
-  programs: z.array(selectProgramsSchema),
+  programs: z.array(selectProgramsSchema.omit({ userId: true })),
   currentPrograms: z.record(z.string(), z.object({
     type: z.string(),
     name: z.string(),

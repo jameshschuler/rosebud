@@ -1,6 +1,6 @@
-import type { CreateRoute, ListRoute, RemoveRoute } from './programs.routes'
+import type { CreateRoute, GetOneRoute, ListRoute, PatchRoute, RemoveRoute } from './programs.routes'
 import type { AppRouteHandler } from '@/lib/types'
-import { and, count, desc, eq, ilike, or } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, or, ne } from 'drizzle-orm'
 import { db } from '@/db'
 import { programs } from '@/db/schema'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
@@ -85,6 +85,16 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
     programType: program.programType,
   }
 
+  const [createdProgram] = await db.insert(programs).values(values).returning()
+  if (!createdProgram) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.INTERNAL_SERVER_ERROR,
+      },
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+    )
+  }
+
   // Deactivate all other programs of the same type
   if (program.active) {
     await db.update(programs)
@@ -93,13 +103,14 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
         and(
           eq(programs.userId, user!.id),
           eq(programs.programType, program.programType),
+          ne(programs.id, createdProgram.id),
         ),
       )
   }
 
-  const createdProgram = await db.insert(programs).values(values).returning()
+  const { userId, ...rest } = createdProgram
 
-  return c.json(createdProgram.at(0), HttpStatusCodes.CREATED)
+  return c.json(rest, HttpStatusCodes.CREATED)
 }
 
 export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
@@ -121,5 +132,63 @@ export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
     )
   }
 
-  return c.body(null, HttpStatusCodes.NO_CONTENT)
+  return c.json({ success: true }, HttpStatusCodes.OK)
+}
+
+export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
+  const user = c.get('user')
+  const { id } = c.req.valid('param')
+
+  const result = await db.query.programs.findFirst({
+    where: and(eq(programs.id, id), eq(programs.userId, user!.id)),
+  })
+
+  if (!result) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
+      },
+      HttpStatusCodes.NOT_FOUND,
+    )
+  }
+
+  return c.json(result, HttpStatusCodes.OK)
+}
+
+export const patch: AppRouteHandler<PatchRoute> = async (c) => {
+  const user = c.get('user')
+  const { id } = c.req.valid('param')
+
+  const program = c.req.valid('json')
+  const [result] = await db.update(programs).set(program).where(
+    and(
+      eq(programs.id, id),
+      eq(programs.userId, user!.id),
+    ),
+  ).returning()
+
+  if (!result) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
+      },
+      HttpStatusCodes.NOT_FOUND,
+    )
+  }
+
+  // Deactivate all other programs of the same type
+  if (result.active) {
+    await db.update(programs)
+      .set({ active: false })
+      .where(
+        and(
+          eq(programs.userId, user!.id),
+          eq(programs.programType, result.programType),
+          ne(programs.id, result.id),
+        ),
+      )
+  }
+
+  const { userId, ...rest } = result
+  return c.json(rest, HttpStatusCodes.OK)
 }

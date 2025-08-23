@@ -1,11 +1,10 @@
 import { createRoute } from '@hono/zod-openapi'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { jsonContent, jsonContentRequired } from 'stoker/openapi/helpers'
-import { createErrorSchema, IdParamsSchema } from 'stoker/openapi/schemas'
-import { insertProgramsSchema, selectProgramsSchema } from '@/db/schemas/programs.schemas'
+import { createErrorSchema, createMessageObjectSchema, IdParamsSchema } from 'stoker/openapi/schemas'
+import { getOneProgramSchema, insertProgramsSchema, patchProgramsSchema, selectProgramsSchema } from '@/db/schemas/programs.schemas'
 import { authMiddleware } from '@/middlewares/auth'
 import { listProgramsQuerySchema, listProgramsResponseSchema } from './lib'
-import { IdsParamsSchema } from '../checkIns/lib'
 import { notFoundSchema } from '@/lib/constants'
 
 const tags = ['Programs']
@@ -26,6 +25,30 @@ export const list = createRoute({
   },
 })
 
+export const getOne = createRoute({
+  path: '/programs/{id}',
+  method: 'get',
+  tags,
+  middleware: [authMiddleware] as const,
+  request: {
+    params: IdParamsSchema,
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      getOneProgramSchema,
+      'The requested program',
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      createErrorSchema(IdParamsSchema),
+      'Invalid id error',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      notFoundSchema,
+      'Program not found',
+    ),
+  },
+})
+
 export const create = createRoute({
   path: '/programs',
   method: 'post',
@@ -36,13 +59,17 @@ export const create = createRoute({
   middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.CREATED]: jsonContent(
-      selectProgramsSchema,
+      getOneProgramSchema,
       'The created program',
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(insertProgramsSchema),
       'The validation errors(s)',
     ),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      createMessageObjectSchema('Internal server error'),
+      'Internal server error', 
+    )
   },
 })
 
@@ -55,7 +82,7 @@ export const remove = createRoute({
   tags,
   middleware: [authMiddleware] as const,
   responses: {
-    [HttpStatusCodes.NO_CONTENT]: {
+    [HttpStatusCodes.OK]: {
       description: 'Program deleted',
     },
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
@@ -63,8 +90,33 @@ export const remove = createRoute({
       'Program not found',
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
-      createErrorSchema(IdsParamsSchema),
+      createErrorSchema(IdParamsSchema),
       'Invalid id error',
+    ),
+  },
+})
+
+export const patch = createRoute({
+  path: '/programs/{id}',
+  method: 'patch',
+  request: {
+    params: IdParamsSchema,
+    body: jsonContentRequired(patchProgramsSchema, 'The program to patch'),
+  },
+  tags,
+  middleware: [authMiddleware] as const,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      getOneProgramSchema,
+      'The patched program',
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      createErrorSchema(patchProgramsSchema).or(createErrorSchema(IdParamsSchema)),
+      'The validation errors(s)',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      notFoundSchema,
+      'Program not found',
     ),
   },
 })
@@ -72,3 +124,5 @@ export const remove = createRoute({
 export type ListRoute = typeof list
 export type CreateRoute = typeof create
 export type RemoveRoute = typeof remove
+export type GetOneRoute = typeof getOne
+export type PatchRoute = typeof patch

@@ -3,6 +3,8 @@ import { programs } from '../schema'
 
 export const selectProgramsSchema = createSelectSchema(programs)
 
+export const getOneProgramSchema = selectProgramsSchema.omit({ userId: true })
+
 export const insertProgramsSchema = createInsertSchema(programs, {
   programType: schema => schema
     .refine((value) => {
@@ -21,3 +23,5 @@ export const insertProgramsSchema = createInsertSchema(programs, {
     updatedAt: true,
     userId: true,
   })
+
+  export const patchProgramsSchema = insertProgramsSchema.partial()
