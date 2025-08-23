@@ -7,13 +7,13 @@ import { client } from '@/lib/honoClient'
 import { CHECKINS_QUERY_KEY } from './useGetCheckIns'
 
 export interface RemoveCheckInRequest {
-  checkInIds: number[]
+  id: number
 }
 
 export async function removeCheckIn(payload: RemoveCheckInRequest, accessToken?: string) {
   const response = await client['check-ins'].$delete({
-    query: {
-      ids: payload.checkInIds.join(','),
+    param: {
+      id: payload.id,
     },
   }, {
     headers: {

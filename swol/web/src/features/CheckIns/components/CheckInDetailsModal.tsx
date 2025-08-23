@@ -41,7 +41,7 @@ export function CheckInDetailsModal({
       }
 
       await removeCheckIn({
-        checkInIds: Array.from(selectedActivities),
+        id: selectedActivities.values().next().value!,
       })
 
       success({
@@ -50,14 +50,12 @@ export function CheckInDetailsModal({
 
       confirmModal.close()
       close()
-    }
-    catch {
+    } catch {
       error({
         message:
           'Unable to remove check in. Please try again in a moment.',
       })
-    }
-    finally {
+    } finally {
       setSelectedActivities(new Set())
     }
   }
@@ -71,8 +69,7 @@ export function CheckInDetailsModal({
     const newSelection = new Set(selectedActivities)
     if (newSelection.has(checkInId)) {
       newSelection.delete(checkInId)
-    }
-    else {
+    } else {
       newSelection.add(checkInId)
     }
 
