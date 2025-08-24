@@ -139,8 +139,19 @@ export function ProgramsTable() {
         </Table.Thead>
         <Table.Tbody>{renderTableRows(isLoading, data?.programs ?? [], setSelectedRow, debounced, selectedRow)}</Table.Tbody>
       </Table>
-      <CreateEditProgramsDrawer opened={addEditModal.opened} close={addEditModal.close} selectedProgramId={selectedRow} />
-      <ConfirmModal opened={removeModal.opened} close={removeModal.close} onConfirm={handleRemoveProgram} isPending={isPending} entityName="program" />
+      <CreateEditProgramsDrawer 
+        opened={addEditModal.opened} 
+        close={addEditModal.close} 
+        selectedProgramId={selectedRow}
+        onSave={() => setSelectedRow(undefined)}
+      />
+      <ConfirmModal 
+        opened={removeModal.opened} 
+        close={removeModal.close} 
+        onConfirm={handleRemoveProgram} 
+        isPending={isPending} 
+        entityName="program"
+      />
     </Flex>
   )
 }

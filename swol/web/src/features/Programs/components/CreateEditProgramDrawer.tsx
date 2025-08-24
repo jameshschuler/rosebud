@@ -2,11 +2,12 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Divider, Drawer, Group, Input, Select, Text, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { useEffect } from 'react'
 import { useIsPhablet } from '@/hooks'
 import { SWOL_GREEN } from '@/theme'
 import { useAddProgram } from '../hooks/useAddProgram'
+import { useEditProgram } from '../hooks/useEditProgram'
 import { useGetProgram } from '../hooks/useGetProgram'
-import { useEffect } from 'react'
 
 interface FormValues {
   name: string
@@ -20,14 +21,18 @@ interface CreateEditProgramDrawerProps {
   opened: boolean
   close: () => void
   selectedProgramId?: number
+  onSave: () => void
 }
 
-export function CreateEditProgramsDrawer({ opened, close, selectedProgramId }: CreateEditProgramDrawerProps) {
+export function CreateEditProgramsDrawer({ opened, close, selectedProgramId, onSave }: CreateEditProgramDrawerProps) {
   const isPhablet = useIsPhablet()
-  const { mutateAsync: addProgram, isPending } = useAddProgram()
+  const { mutateAsync: addProgram, isPending: adding } = useAddProgram()
+  const { mutateAsync: editProgram, isPending: updating } = useEditProgram()
 
   // TODO: should this run before the drawer opens?
   const { data: program } = useGetProgram(selectedProgramId)
+
+  const isEditMode = selectedProgramId !== undefined
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -45,28 +50,38 @@ export function CreateEditProgramsDrawer({ opened, close, selectedProgramId }: C
   })
 
   const handleOnSubmit = async (values: FormValues) => {
-    await addProgram({
-      name: values.name,
-      programType: values.programType,
-      active: values.setAsCurrent === 'Yes',
-      author: values.author || '',
-      description: values.description || '',
-    })
+    if (isEditMode) {
+      await editProgram({
+        id: selectedProgramId!,
+        name: values.name,
+        programType: values.programType,
+        active: values.setAsCurrent === 'Yes',
+        author: values.author || '',
+        description: values.description || '',
+      })
+    } else {
+      await addProgram({
+        name: values.name,
+        programType: values.programType,
+        active: values.setAsCurrent === 'Yes',
+        author: values.author || '',
+        description: values.description || '',
+      })
+    }
 
     form.reset()
     close()
+    onSave()
   }
 
   useEffect(() => {
     if (program && opened) {
       form.setValues({
         name: program.name,
-
-        // TODO:
-        author: '',
-        description: '',
-        programType: '',
-        setAsCurrent: 'No',
+        author: program.author || '',
+        description: program.description || '',
+        programType: program.programType,
+        setAsCurrent: program.active ? 'Yes' : 'No',
       })
     }
   }, [program, opened])
@@ -90,7 +105,7 @@ export function CreateEditProgramsDrawer({ opened, close, selectedProgramId }: C
         <Drawer.Header p={24}>
           <Drawer.Title>
             <Text size="xl" fw={600}>
-              {selectedProgramId ? 'Edit Program' : 'New Program'}
+              {isEditMode ? 'Edit Program' : 'New Program'}
             </Text>
           </Drawer.Title>
           <Drawer.CloseButton icon={<FontAwesomeIcon icon={faCircleXmark} size="xl" />} />
@@ -106,10 +121,10 @@ export function CreateEditProgramsDrawer({ opened, close, selectedProgramId }: C
                 type="submit"
                 color={SWOL_GREEN}
                 radius="md"
-                disabled={isPending}
-                loading={isPending}
+                disabled={adding || updating}
+                loading={adding || updating}
               >
-                {selectedProgramId ? 'Save' : 'Add'}
+                {isEditMode ? 'Save' : 'Add'}
               </Button>
             </Group>
             <Input.Wrapper label="Name" size="md" required>
