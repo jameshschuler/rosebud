@@ -1,6 +1,6 @@
 import { faPencil, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Checkbox, Divider, Flex, Input, Table, Text, Title, Tooltip } from '@mantine/core'
+import { Checkbox, Divider, Flex, Input, Table, TableScrollContainer, Text, Title, Tooltip } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import dayjs from 'dayjs'
 import { useState } from 'react'
@@ -125,20 +125,22 @@ export function ProgramsTable() {
       </Flex>
       <Divider my={24} />
       <Title size={24}>Programs</Title>
-      <Table mt={24} verticalSpacing="sm">
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th />
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Type</Table.Th>
-            <Table.Th>Author</Table.Th>
-            <Table.Th>Description</Table.Th>
-            <Table.Th>Current</Table.Th>
-            <Table.Th>Created</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{renderTableRows(isLoading, data?.programs ?? [], setSelectedRow, debounced, selectedRow)}</Table.Tbody>
-      </Table>
+      <TableScrollContainer minWidth={768}>
+        <Table mt={24} verticalSpacing="sm">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th />
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Type</Table.Th>
+              <Table.Th>Author</Table.Th>
+              <Table.Th>Description</Table.Th>
+              <Table.Th>Current</Table.Th>
+              <Table.Th>Created</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{renderTableRows(isLoading, data?.programs ?? [], setSelectedRow, debounced, selectedRow)}</Table.Tbody>
+        </Table>
+      </TableScrollContainer>
       <CreateEditProgramsDrawer 
         opened={addEditModal.opened} 
         close={addEditModal.close} 
