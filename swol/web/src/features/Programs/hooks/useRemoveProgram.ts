@@ -11,10 +11,8 @@ export interface RemoveProgramRequest {
 }
 
 export async function removeProgram(payload: RemoveProgramRequest, accessToken?: string) {
-  const response = await client.programs.$delete({
-    param: {
-      id: payload.id,
-    },
+  const response = await client.programs[':id'].$delete({
+    param: { id: payload.id },
   }, {
     headers: {
       Authorization: `Bearer ${accessToken}`,

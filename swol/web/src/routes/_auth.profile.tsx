@@ -1,6 +1,6 @@
-import { Grid } from '@mantine/core'
+import { Flex } from '@mantine/core'
 import { createFileRoute } from '@tanstack/react-router'
-import { ProgramsCard } from '@/features/Programs/components/ProgramsCard'
+import { ComingSoon } from '@/components/ComingSoon'
 
 export const Route = createFileRoute('/_auth/profile')({
   component: ProfilePage,
@@ -8,10 +8,8 @@ export const Route = createFileRoute('/_auth/profile')({
 
 function ProfilePage() {
   return (
-    <Grid>
-      <Grid.Col span={{ base: 12, sm: 6 }}>
-        <ProgramsCard />
-      </Grid.Col>
-    </Grid>
+    <Flex direction="column" align="center">
+      <ComingSoon />
+    </Flex>
   )
 }

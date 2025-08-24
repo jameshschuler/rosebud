@@ -1,12 +1,16 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPencil, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Checkbox, Divider, Flex, Input, Table, Text, Title, Tooltip } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import dayjs from 'dayjs'
 import { useState } from 'react'
+import { ConfirmModal } from '@/components/ConfirmModal'
 import { ResponsiveButton } from '@/components/ui/ResponsiveButton'
+import { useModal } from '@/hooks'
 import { SWOL_GREEN } from '@/theme'
 import { useGetPrograms } from '../hooks/useGetPrograms'
+import { useRemoveProgram } from '../hooks/useRemoveProgram'
+import { CreateEditProgramsDrawer } from './CreateEditProgramDrawer'
 import { NoData } from './NoData'
 import { TableLoader } from './TableLoader'
 
@@ -73,17 +77,51 @@ export function ProgramsTable() {
   const [searchQuery, setSearchQuery] = useState('')
   const [debounced] = useDebouncedValue(searchQuery, 300)
   const { data, isLoading } = useGetPrograms(debounced)
+  const addEditModal = useModal(false)
+  const removeModal = useModal(false)
+  
+  const { mutateAsync: removeProgram, isPending } = useRemoveProgram()
+
+  async function handleRemoveProgram() {
+    await removeProgram({
+      id: selectedRow!,
+    })
+
+    setSelectedRow(undefined)
+    removeModal.close()
+  }
   
   return (
     <Flex direction="column">
       <Flex justify="space-between">
         <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} variant="unstyled" size="md" w="50%" placeholder="Search by name, author, or program type..." />
-        <ResponsiveButton
-          icon={<FontAwesomeIcon icon={faPlus} size="lg" />}
-          onClick={() => { }}
-          label="Add Program"
-          color={SWOL_GREEN}
-        />
+        <Flex gap={8}>
+          {selectedRow
+            ? (
+                <>
+                  <ResponsiveButton
+                    icon={<FontAwesomeIcon icon={faTrashAlt} size="lg" />}
+                    onClick={removeModal.open}
+                    label="Delete Program"
+                    color="red"
+                  />
+                  <ResponsiveButton
+                    icon={<FontAwesomeIcon icon={faPencil} size="lg" />}
+                    onClick={addEditModal.open}
+                    label="Edit Program"
+                    color="blue"
+                  />
+                </>
+              )
+            : (
+                <ResponsiveButton
+                  icon={<FontAwesomeIcon icon={faPlus} size="lg" />}
+                  onClick={addEditModal.open}
+                  label="Add Program"
+                  color={SWOL_GREEN}
+                />
+              )}
+        </Flex>
       </Flex>
       <Divider my={24} />
       <Title size={24}>Programs</Title>
@@ -101,6 +139,8 @@ export function ProgramsTable() {
         </Table.Thead>
         <Table.Tbody>{renderTableRows(isLoading, data?.programs ?? [], setSelectedRow, debounced, selectedRow)}</Table.Tbody>
       </Table>
+      <CreateEditProgramsDrawer opened={addEditModal.opened} close={addEditModal.close} selectedProgramId={selectedRow} />
+      <ConfirmModal opened={removeModal.opened} close={removeModal.close} onConfirm={handleRemoveProgram} isPending={isPending} entityName="program" />
     </Flex>
   )
 }

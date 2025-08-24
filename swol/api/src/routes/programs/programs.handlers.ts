@@ -141,6 +141,9 @@ export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
 
   const result = await db.query.programs.findFirst({
     where: and(eq(programs.id, id), eq(programs.userId, user!.id)),
+    columns: {
+      userId: false,
+    }
   })
 
   if (!result) {
