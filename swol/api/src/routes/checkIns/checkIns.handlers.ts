@@ -1,15 +1,34 @@
 import type { CreateRoute, ListRoute, RemoveRoute } from './checkIns.routes'
 import type { AppRouteHandler } from '@/lib/types'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import * as HttpStatusPhrases from 'stoker/http-status-phrases'
+import { xid } from 'zod'
 import { db } from '@/db'
 import { activity, gymCheckin, programs } from '@/db/schema'
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const user = c.get('user')
+  const { year, month } = c.req.valid('query')
+
+  const whereConditions = []
+
+  if (year) {
+    whereConditions.push(eq(sql`EXTRACT(YEAR FROM ${gymCheckin.checkinDate})`, year))
+
+    if (month) {
+      const [startMonth, endMonth] = month.split('-').map(m => Number.parseInt(m, 10))
+      if (endMonth) {
+        whereConditions.push(sql`${sql`EXTRACT(MONTH FROM ${gymCheckin.checkinDate})`} BETWEEN ${startMonth} AND ${endMonth}`)
+      }
+      else {
+        whereConditions.push(eq(sql`EXTRACT(MONTH FROM ${gymCheckin.checkinDate})`, startMonth))
+      }
+    }
+  }
+
   const rows = await db.query.gymCheckin.findMany({
-    where: eq(gymCheckin.userId, user!.id),
+    where: and(eq(gymCheckin.userId, user!.id), ...whereConditions),
     columns: {
       id: true,
       checkinDate: true,

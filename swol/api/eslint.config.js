@@ -6,12 +6,9 @@ export default antfu(
     formatters: true,
     typescript: true,
     stylistic: {
-      indent: 2,
       semi: false,
       quotes: 'single',
     },
-    react: true,
-    markdown: true,
   },
   {
     rules: {

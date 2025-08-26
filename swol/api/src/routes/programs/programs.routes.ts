@@ -3,9 +3,9 @@ import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { jsonContent, jsonContentRequired } from 'stoker/openapi/helpers'
 import { createErrorSchema, createMessageObjectSchema, IdParamsSchema } from 'stoker/openapi/schemas'
 import { getOneProgramSchema, insertProgramsSchema, patchProgramsSchema } from '@/db/schemas/programs.schemas'
+import { notFoundSchema } from '@/lib/constants'
 import { authMiddleware } from '@/middlewares/auth'
 import { listProgramsQuerySchema, listProgramsResponseSchema } from './lib'
-import { notFoundSchema } from '@/lib/constants'
 
 const tags = ['Programs']
 
@@ -68,8 +68,8 @@ export const create = createRoute({
     ),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
       createMessageObjectSchema('Internal server error'),
-      'Internal server error', 
-    )
+      'Internal server error',
+    ),
   },
 })
 

@@ -2,11 +2,13 @@
   // Disable the default formatter, use eslint instead
   "prettier.enable": false,
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": null,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always",
     "source.fixAll.ts": "always"
   },
+  "editor.wordWrapColumn": 80,
+  "editor.rulers": [80],
   "eslint.run": "onSave",
   "eslint.format.enable": true,
   "eslint.useFlatConfig": true,

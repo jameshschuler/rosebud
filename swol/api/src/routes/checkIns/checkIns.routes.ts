@@ -5,12 +5,16 @@ import { createErrorSchema, IdParamsSchema } from 'stoker/openapi/schemas'
 import { insertCheckInsSchema, selectCheckInSchema, selectCheckInsSchema } from '@/db/schemas/checkIns.schemas'
 import { notFoundSchema } from '@/lib/constants'
 import { authMiddleware } from '@/middlewares/auth'
+import { listCheckInsQuerySchema } from './lib'
 
 const tags = ['Check-Ins']
 
 export const list = createRoute({
   path: '/check-ins',
   method: 'get',
+  request: {
+    query: listCheckInsQuerySchema,
+  },
   tags,
   middleware: [authMiddleware] as const,
   responses: {
