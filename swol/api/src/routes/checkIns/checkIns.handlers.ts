@@ -1,9 +1,8 @@
 import type { CreateRoute, ListRoute, RemoveRoute } from './checkIns.routes'
 import type { AppRouteHandler } from '@/lib/types'
-import { and, eq, sql } from 'drizzle-orm'
+import { and, eq, lt, sql } from 'drizzle-orm'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import * as HttpStatusPhrases from 'stoker/http-status-phrases'
-import { xid } from 'zod'
 import { db } from '@/db'
 import { activity, gymCheckin, programs } from '@/db/schema'
 
@@ -11,10 +10,12 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
   const user = c.get('user')
   const { year, month } = c.req.valid('query')
 
+  let hasMore = false
   const whereConditions = []
 
   if (year) {
     whereConditions.push(eq(sql`EXTRACT(YEAR FROM ${gymCheckin.checkinDate})`, year))
+    let earliestMonth = null
 
     if (month) {
       const [startMonth, endMonth] = month.split('-').map(m => Number.parseInt(m, 10))
@@ -24,7 +25,25 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
       else {
         whereConditions.push(eq(sql`EXTRACT(MONTH FROM ${gymCheckin.checkinDate})`, startMonth))
       }
+
+      earliestMonth = startMonth
     }
+
+    let startDateString = `${year}-01-01`
+    if (earliestMonth) {
+      const paddedMonth = String(earliestMonth).padStart(2, '0')
+      startDateString = `${year}-${paddedMonth}-01`
+    }
+
+    const result = await db
+      .select({ id: gymCheckin.id })
+      .from(gymCheckin)
+      .where(and(
+        eq(gymCheckin.userId, user!.id),
+        lt(gymCheckin.checkinDate, startDateString),
+      ))
+      .limit(1)
+    hasMore = result.length > 0
   }
 
   const rows = await db.query.gymCheckin.findMany({
@@ -49,7 +68,10 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
     },
   })
 
-  return c.json(rows)
+  return c.json({
+    checkIns: rows,
+    hasMore,
+  })
 }
 
 export const create: AppRouteHandler<CreateRoute> = async (c) => {

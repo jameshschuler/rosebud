@@ -1,5 +1,7 @@
+import type { CheckIn } from '../types/checkIns'
 import { Box, Flex } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { useEffect, useState } from 'react'
 import { useGetAllCheckIns } from '@/features/CheckIns/hooks/useGetCheckIns'
 import { useTransformCheckIns } from '../hooks/useTransformCheckIns'
 import { CheckInsHeader } from './CheckInsHeader'
@@ -10,9 +12,33 @@ import { ListSkeleton } from './ListSkeleton'
 import { NoData } from './NoData'
 
 export function CheckIns() {
-  const { isLoading, data, error, refetch } = useGetAllCheckIns()
-  const { checkIns } = useTransformCheckIns(data)
+  const [year, setYear] = useState<string>('2025')
+  const [month, setMonth] = useState<string>('7-12')
+
+  const [allCheckIns, setAllCheckIns] = useState<CheckIn[]>([])
+
+  const { isLoading, data, error, refetch } = useGetAllCheckIns(year, month)
+  const { checkIns } = useTransformCheckIns(allCheckIns)
   const [opened, { open, close }] = useDisclosure(false)
+
+  useEffect(() => {
+    if (data) {
+      // TODO: fix (naughty)
+      setAllCheckIns((prevCheckIns) => {
+        return [...prevCheckIns, ...data.checkIns]
+      })
+    }
+  }, [data])
+
+  const handleLoadMore = () => {
+    if (month === '7-12') {
+      setMonth('1-6')
+    } else {
+      const nextYear = (Number.parseInt(year) - 1).toString()
+      setYear(nextYear)
+      setMonth('7-12')
+    }
+  }
 
   return (
     <Flex direction="column" gap={24}>
@@ -27,9 +53,9 @@ export function CheckIns() {
             }}
           />
         )}
-        {!isLoading && data?.length === 0 && !error && <NoData onAction={open} />}
-        {!error && !isLoading && checkIns.size > 0 && (
-          <CheckInsList checkIns={checkIns} />
+        {!isLoading && allCheckIns?.length === 0 && !error && <NoData onAction={open} />}
+        {!error && !isLoading && allCheckIns.length > 0 && (
+          <CheckInsList hasMore={data?.hasMore ?? false} checkIns={checkIns} loadMore={handleLoadMore} loading={isLoading} />
         )}
       </Box>
 

@@ -39,7 +39,7 @@ export function useRemoveCheckIn() {
       })
 
       queryClient.invalidateQueries({
-        queryKey: CHECKINS_QUERY_KEY,
+        queryKey: [CHECKINS_QUERY_KEY],
       })
     },
     onError: (_err: Error) => {

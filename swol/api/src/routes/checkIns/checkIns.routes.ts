@@ -19,7 +19,10 @@ export const list = createRoute({
   middleware: [authMiddleware] as const,
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
-      z.array(selectCheckInsSchema),
+      z.object({
+        checkIns: z.array(selectCheckInsSchema),
+        hasMore: z.boolean(),
+      }),
       'The list of check-ins',
     ),
     // TODO: currently middleware response types aren't getting passed through

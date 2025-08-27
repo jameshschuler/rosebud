@@ -1,5 +1,5 @@
 import type { Activity, CheckInDisplayItem } from '@/features/CheckIns/types/checkIns'
-import { Divider, Flex, Title } from '@mantine/core'
+import { Button, Divider, Flex, Title } from '@mantine/core'
 import { useState } from 'react'
 import { useModal } from '@/hooks'
 import { CheckInCard } from './CheckInCard'
@@ -7,9 +7,12 @@ import { CheckInDetailsModal } from './CheckInDetailsModal'
 
 interface CheckInsListProps {
   checkIns: CheckInDisplayItem
+  loadMore: () => void
+  loading: boolean
+  hasMore: boolean
 }
 
-export function CheckInsList({ checkIns }: CheckInsListProps) {
+export function CheckInsList({ checkIns, loadMore, loading, hasMore }: CheckInsListProps) {
   const [selectedCheckIns, setSelectedCheckIns] = useState<{
     checkInDate: string
     details: { id: number, activity: Activity }[]
@@ -50,6 +53,7 @@ export function CheckInsList({ checkIns }: CheckInsListProps) {
             <Divider mb={32} />
           </Flex>
         ))}
+        <Button disabled={!hasMore} loading={loading} style={{ alignSelf: 'center' }} size="md" variant="outline" color="gray" onClick={loadMore}>Load more</Button>
       </Flex>
       <CheckInDetailsModal
         selectedCheckIns={selectedCheckIns}
