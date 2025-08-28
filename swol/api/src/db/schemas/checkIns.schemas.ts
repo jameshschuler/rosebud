@@ -53,3 +53,5 @@ export const insertCheckInsSchema = createInsertSchema(gymCheckin, {
     createdAt: true,
     userId: true,
   })
+
+export const patchCheckInsSchema = insertCheckInsSchema.partial()

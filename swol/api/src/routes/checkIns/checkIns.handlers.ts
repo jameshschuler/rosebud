@@ -1,6 +1,6 @@
-import type { CreateRoute, ListRoute, RemoveRoute } from './checkIns.routes'
+import type { CreateRoute, GetOneRoute, ListRoute, PatchRoute, RemoveRoute } from './checkIns.routes'
 import type { AppRouteHandler } from '@/lib/types'
-import { and, eq, lt, sql } from 'drizzle-orm'
+import { and, eq, inArray, lt, sql } from 'drizzle-orm'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import * as HttpStatusPhrases from 'stoker/http-status-phrases'
 import { db } from '@/db'
@@ -8,7 +8,36 @@ import { activity, gymCheckin, programs } from '@/db/schema'
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const user = c.get('user')
-  const { year, month } = c.req.valid('query')
+  const { year, month, ids } = c.req.valid('query')
+
+  if (ids && ids.length !== 0) {
+    const rows = await db.query.gymCheckin.findMany({
+      where: and(eq(gymCheckin.userId, user!.id), inArray(gymCheckin.id, ids)),
+      columns: {
+        id: true,
+        checkinDate: true,
+      },
+      with: {
+        activity: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+        program: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    })
+
+    return c.json({
+      checkIns: rows,
+      hasMore: false,
+    })
+  }
 
   let hasMore = false
   const whereConditions = []
@@ -144,4 +173,52 @@ export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
   }
 
   return c.body(null, HttpStatusCodes.NO_CONTENT)
+}
+
+export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
+  const user = c.get('user')
+  const { id } = c.req.valid('param')
+
+  const result = await db.query.gymCheckin.findFirst({
+    where: and(eq(gymCheckin.id, id), eq(gymCheckin.userId, user!.id)),
+    columns: {
+      userId: false,
+    },
+  })
+
+  if (!result) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
+      },
+      HttpStatusCodes.NOT_FOUND,
+    )
+  }
+
+  return c.json(result, HttpStatusCodes.OK)
+}
+
+export const patch: AppRouteHandler<PatchRoute> = async (c) => {
+  const user = c.get('user')
+  const { id } = c.req.valid('param')
+
+  const checkIn = c.req.valid('json')
+  const [result] = await db.update(gymCheckin).set(checkIn).where(
+    and(
+      eq(gymCheckin.id, id),
+      eq(gymCheckin.userId, user!.id),
+    ),
+  ).returning()
+
+  if (!result) {
+    return c.json(
+      {
+        message: HttpStatusPhrases.NOT_FOUND,
+      },
+      HttpStatusCodes.NOT_FOUND,
+    )
+  }
+
+  const { userId, ...rest } = result
+  return c.json(rest, HttpStatusCodes.OK)
 }

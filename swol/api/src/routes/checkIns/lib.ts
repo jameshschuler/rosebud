@@ -1,6 +1,23 @@
 import z from 'zod'
 
 export const listCheckInsQuerySchema = z.object({
+  ids: z.string()
+    .optional()
+    .transform((idsString) => {
+      if (idsString) {
+        return idsString.split(',').map(id => Number.parseInt(id, 10))
+      }
+      return undefined
+    })
+    .openapi({
+      param: {
+        name: 'ids',
+        in: 'query',
+        required: false,
+        description: 'Filter check ins by IDs (comma-separated).',
+        example: '1,2,3',
+      },
+    }),
   year: z.string().optional().openapi({
     param: {
       name: 'year',

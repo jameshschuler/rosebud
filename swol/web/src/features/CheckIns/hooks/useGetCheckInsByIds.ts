@@ -2,21 +2,19 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks'
 import { client } from '@/lib/honoClient'
 
-export const CHECKINS_QUERY_KEY = 'check-ins'
+export const CHECKINS_QUERY_KEY = 'check-ins-by-ids'
 
 export interface CheckInQueryParams {
-  year?: string
-  month?: string
+  ids?: number[]
 }
 
-export function getAllCheckInsQueryOptions(accessToken?: string, params?: CheckInQueryParams) {
+export function getAllCheckInsByIdsQueryOptions(accessToken?: string, params?: CheckInQueryParams) {
   return queryOptions({
-    queryKey: [CHECKINS_QUERY_KEY, params?.year, params?.month, params?.ids],
+    queryKey: [CHECKINS_QUERY_KEY, params?.ids],
     queryFn: async () => {
       const res = await client['check-ins'].$get({
         query: {
-          year: params?.year,
-          month: params?.month,
+          ids: params?.ids?.join(','),
         },
       }, {
         headers: {
@@ -28,11 +26,12 @@ export function getAllCheckInsQueryOptions(accessToken?: string, params?: CheckI
       
       return data
     },
+    enabled: params?.ids !== undefined && params?.ids.length > 0,
   })
 }
 
-export function useGetAllCheckIns(params?: CheckInQueryParams) {
+export function useGetAllCheckInsByIds(params?: CheckInQueryParams) {
   const { session } = useAuth()
-  const options = getAllCheckInsQueryOptions(session?.access_token, params)
+  const options = getAllCheckInsByIdsQueryOptions(session?.access_token, params)
   return useQuery(options)
 }
