@@ -1,10 +1,8 @@
-import type { Activity, CheckInDisplayItem } from '@/features/CheckIns/types/checkIns'
+import type { CheckInDisplayItem } from '@/features/CheckIns/types/checkIns'
 import { Button, Divider, Flex, Title } from '@mantine/core'
 import { useState } from 'react'
-import { ConfirmModal } from '@/components/ConfirmModal'
 import { useModal } from '@/hooks'
 import { CheckInCard } from './CheckInCard'
-import { CheckInDetailsModal } from './CheckInDetailsModal'
 import { DetailsDrawer } from './DetailsDrawer'
 
 interface CheckInsListProps {

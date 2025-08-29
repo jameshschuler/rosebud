@@ -4,10 +4,12 @@ import { Box, Button, Divider, Drawer, Flex, Stack, Text } from '@mantine/core'
 import { useIsMobile } from '@/hooks'
 import { AppLink } from './AppLink'
 
+// TODO: move achievements here
+// TODO: maybe goals as well
 const navLinks = [
   {
     to: '/profile',
-    label: 'Profile',
+    label: 'My Profile',
     icon: faUser,
     activeIcon: faUser,
   },

@@ -2,14 +2,14 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Divider, Drawer, Text } from '@mantine/core'
 import { useIsPhablet } from '@/hooks'
-import { CreateEditForm } from './CreateEditForm'
+import { AddCheckInForm } from './AddCheckInForm'
 
-interface CreateEditDrawerProps {
+interface AddCheckInDrawerProps {
   opened: boolean
   close: () => void
 }
 
-export function CreateEditDrawer({ opened, close }: CreateEditDrawerProps) {
+export function AddCheckInDrawer({ opened, close }: AddCheckInDrawerProps) {
   const isPhablet = useIsPhablet()
 
   return (
@@ -38,7 +38,7 @@ export function CreateEditDrawer({ opened, close }: CreateEditDrawerProps) {
         </Drawer.Header>
         <Divider mb="md" mx="md" />
         <Drawer.Body px={24} pb={16}>
-          <CreateEditForm close={close} />
+          <AddCheckInForm close={close} />
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>

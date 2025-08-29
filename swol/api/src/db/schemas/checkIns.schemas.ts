@@ -23,6 +23,7 @@ export const selectCheckInsSchema = createSelectSchema(gymCheckin)
     checkinDate: true,
     activity: true,
     program: true,
+    notes: true,
   })
 
 export const insertCheckInsSchema = createInsertSchema(gymCheckin, {

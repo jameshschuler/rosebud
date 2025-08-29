@@ -1,7 +1,7 @@
 import type { ComboboxItem, SelectProps } from '@mantine/core'
 import { faCheck, faStar } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Flex, Group, Select, Text, Textarea } from '@mantine/core'
+import { Button, Divider, Flex, Group, Select, Text, Textarea } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import dayjs from 'dayjs'
@@ -23,11 +23,11 @@ const renderSelectOption: SelectProps['renderOption'] = ({ option, checked = fal
   </Group>
 )
 
-interface CreateEditFormProps {
+interface AddCheckInFormProps {
   close: () => void
 }
 
-export function CreateEditForm({ close }: CreateEditFormProps) {
+export function AddCheckInForm({ close }: AddCheckInFormProps) {
   const isMobile = useIsMobile()
 
   const { data: programsData, isLoading } = useGetPrograms()
@@ -71,6 +71,24 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
       style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
       onSubmit={form.onSubmit(handleOnSubmit)}
     >
+      <Flex justify="center">
+        <DatePicker
+          size="md"
+          numberOfColumns={isMobile ? 1 : 2}
+          value={selectedDate}
+          onChange={(date) => {
+            form.setFieldValue('date', date as unknown as Date)
+            form.validateField('date')
+            setSelectedDate(date as unknown as Date)
+          }}
+        />
+      </Flex>
+      {form.errors.date && (
+        <Text c="red" size="xs">
+          {form.errors.date}
+        </Text>
+      )}
+
       <Select
         size="md"
         required
@@ -106,23 +124,7 @@ export function CreateEditForm({ close }: CreateEditFormProps) {
         {...form.getInputProps('programId')}
       />
 
-      <Flex justify="center">
-        <DatePicker
-          size="md"
-          numberOfColumns={isMobile ? 1 : 2}
-          value={selectedDate}
-          onChange={(date) => {
-            form.setFieldValue('date', date as unknown as Date)
-            form.validateField('date')
-            setSelectedDate(date as unknown as Date)
-          }}
-        />
-      </Flex>
-      {form.errors.date && (
-        <Text c="red" size="xs">
-          {form.errors.date}
-        </Text>
-      )}
+      <Divider my="md" />
 
       <div>
         <Textarea

@@ -16,6 +16,7 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
       columns: {
         id: true,
         checkinDate: true,
+        notes: true,
       },
       with: {
         activity: {

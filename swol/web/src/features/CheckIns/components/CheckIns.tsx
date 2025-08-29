@@ -4,9 +4,9 @@ import { useDisclosure } from '@mantine/hooks'
 import { useEffect, useState } from 'react'
 import { useGetAllCheckIns } from '@/features/CheckIns/hooks/useGetCheckIns'
 import { useTransformCheckIns } from '../hooks/useTransformCheckIns'
+import { AddCheckInDrawer } from './AddCheckInDrawer'
 import { CheckInsHeader } from './CheckInsHeader'
 import { CheckInsList } from './CheckInsList'
-import { CreateEditDrawer } from './CreateEditDrawer'
 import { Error } from './Error'
 import { ListSkeleton } from './ListSkeleton'
 import { NoData } from './NoData'
@@ -59,7 +59,7 @@ export function CheckIns() {
         )}
       </Box>
 
-      <CreateEditDrawer opened={opened} close={close} />
+      <AddCheckInDrawer opened={opened} close={close} />
     </Flex>
   )
 }
