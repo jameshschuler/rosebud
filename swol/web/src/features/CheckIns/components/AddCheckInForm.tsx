@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { useGetPrograms } from '@/features/Programs/hooks/useGetPrograms'
 import { useIsMobile } from '@/hooks/useIsMobile'
+import { activityTypeOptions } from '@/lib/constants'
 import { SWOL_GREEN } from '@/theme'
 import { useAddCheckIn } from '../hooks/useAddCheckIn'
 
@@ -94,16 +95,7 @@ export function AddCheckInForm({ close }: AddCheckInFormProps) {
         required
         label="Activity Type"
         placeholder="Select activity type"
-        data={[
-          {
-            label: 'Strength Training',
-            value: '1',
-          },
-          {
-            label: 'Running',
-            value: '2',
-          },
-        ]}
+        data={activityTypeOptions}
         key={form.key('activityId')}
         {...form.getInputProps('activityId')}
       />

@@ -105,7 +105,7 @@ export const getOne = createRoute({
 })
 
 export const patch = createRoute({
-  path: '/check-in/{id}',
+  path: '/check-ins/{id}',
   method: 'patch',
   request: {
     params: IdParamsSchema,
